@@ -1,20 +1,8 @@
 plugins {
-    id 'java-library'
+    id 'base'
 }
 
-group = 'kh.edu.istad'
-version = '1.0.0'
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
-
-repositories {
-    mavenCentral()
-}
-
-tasks.named('test', Test) {
-    useJUnitPlatform()
+tasks.named('build') {
+    dependsOn gradle.includedBuild('business-service').task(':build')
+    dependsOn gradle.includedBuild('customer-service').task(':build')
 }

@@ -1,0 +1,8 @@
+plugins {
+    id 'base'
+}
+
+tasks.named('build') {
+    dependsOn gradle.includedBuild('istad-common').task(':build')
+    dependsOn gradle.includedBuild('microservices').task(':build')
+}
