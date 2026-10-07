@@ -1,0 +1,16 @@
+// This file is used to configure the build logic project in a Gradle multi-project build.
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+// This block is used to configure the repositories for dependency resolution in the build logic project.
+dependencyResolutionManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "build-logic"

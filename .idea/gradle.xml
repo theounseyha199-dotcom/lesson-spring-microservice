@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/build-logic" name="build-logic">
+                <projects>
+                  <project path="$PROJECT_DIR$/build-logic" />
+                </projects>
+              </build>
+              <build path="$PROJECT_DIR$/istad-common" name="istad-common">
+                <projects>
+                  <project path="$PROJECT_DIR$/istad-common" />
+                  <project path="$PROJECT_DIR$/istad-common/istad-common-domain" />
+                  <project path="$PROJECT_DIR$/istad-common/istad-common-restapi" />
+                </projects>
+              </build>
+              <build path="$PROJECT_DIR$/microservices" name="microservices">
+                <projects>
+                  <project path="$PROJECT_DIR$/microservices" />
+                  <project path="$PROJECT_DIR$/microservices/business-service" />
+                  <project path="$PROJECT_DIR$/microservices/customer-service" />
+                  <project path="$PROJECT_DIR$/microservices/customer-service/customer-service-domain" />
+                  <project path="$PROJECT_DIR$/microservices/customer-service/customer-service-domain/customer-application-service" />
+                  <project path="$PROJECT_DIR$/microservices/customer-service/customer-service-domain/customer-domain-core" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/build-logic" />
+            <option value="$PROJECT_DIR$/istad-common" />
+            <option value="$PROJECT_DIR$/istad-common/istad-common-domain" />
+            <option value="$PROJECT_DIR$/istad-common/istad-common-restapi" />
+            <option value="$PROJECT_DIR$/microservices" />
+            <option value="$PROJECT_DIR$/microservices/business-service" />
+            <option value="$PROJECT_DIR$/microservices/customer-service" />
+            <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-domain" />
+            <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-domain/customer-application-service" />
+            <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-domain/customer-domain-core" />
+          </set>
+        </option>
+        <option name="myGradleHome" value="/usr/share/java/gradle" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
