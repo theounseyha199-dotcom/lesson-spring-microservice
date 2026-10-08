@@ -3,7 +3,9 @@ package kh.edu.istad.platform.customer.restapi.controller;
 import kh.edu.istad.platform.customer.domain.dto.InitiateCustomerResult;
 import kh.edu.istad.platform.customer.domain.dto.UpdateCustomerCommand;
 import kh.edu.istad.platform.customer.domain.dto.UpdateCustomerResult;
+import kh.edu.istad.platform.customer.domain.event.CustomerDeactivatedEvent;
 import kh.edu.istad.platform.customer.domain.exception.CustomerNotFoundException;
+import kh.edu.istad.platform.customer.domain.usecase.DeactivateCustomerUseCase;
 import kh.edu.istad.platform.customer.domain.usecase.InitiateCustomerUseCase;
 import kh.edu.istad.platform.customer.domain.usecase.UpdateCustomerUseCase;
 import kh.edu.istad.platform.customer.restapi.dto.CustomerInitiateRequest;
@@ -25,6 +27,7 @@ public class CustomerController {
 
     private final InitiateCustomerUseCase initiateCustomerUseCase;
     private final UpdateCustomerUseCase updateCustomerUseCase;
+    private final DeactivateCustomerUseCase deactivateCustomerUseCase;
     private final CustomerWebMapper customerWebMapper;
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -53,6 +56,13 @@ public class CustomerController {
     @ExceptionHandler(CustomerNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void customerNotFound() {
+    }
+
+    @PutMapping("/{customerId}/deactivate")
+    public CustomerDeactivatedEvent deactivatedEvent(
+            @PathVariable("customerId") UUID customerId
+    ) {
+        return deactivateCustomerUseCase.execute(customerId);
     }
 
 }
