@@ -1,7 +1,8 @@
-plugins{
+plugins {
     id 'spring-common-conventions'
 }
 
 dependencies {
     api project(':customer-service-domain:customer-application-service')
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 }

@@ -2,15 +2,8 @@ plugins {
     id 'spring-boot-common-conventions'
 }
 
-group = 'kh.edu.istad'
-version = '1.0.0'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation 'kh.edu.istad:istad-common-domain:1.0.0'
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

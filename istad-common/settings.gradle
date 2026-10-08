@@ -6,11 +6,13 @@ pluginManagement {
         mavenCentral()
     }
 }
+
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
     }
 }
+
 rootProject.name = 'istad-common'
 include 'istad-common-domain'
 include 'istad-common-restapi'

@@ -2,7 +2,6 @@ plugins {
     id 'java-common-conventions'
 }
 
-group = 'kh.edu.istad'
+dependencies {
 
-
-
+}

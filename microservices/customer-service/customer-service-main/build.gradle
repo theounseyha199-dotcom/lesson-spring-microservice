@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+
     implementation project(':customer-service-domain:customer-domain-core')
     implementation project(':customer-service-domain:customer-application-service')
     implementation project(':customer-service-message')

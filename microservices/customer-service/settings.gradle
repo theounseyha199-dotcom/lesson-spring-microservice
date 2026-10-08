@@ -6,22 +6,22 @@ pluginManagement {
         mavenCentral()
     }
 }
-includeBuild '../../istad-common'
+
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
     }
 }
+
 rootProject.name = 'customer-service'
+includeBuild '../../istad-common'
 
-
-include 'customer-service-domain:customer-application-service'
+include 'customer-service-main'
 include 'customer-service-domain:customer-domain-core'
+include 'customer-service-domain:customer-application-service'
 include 'customer-service-restapi'
 include 'customer-service-persistence'
 include 'customer-service-message'
-include 'customer-service-main'
 
-// Keep the intended Gradle project name while using the directory's current spelling.
 project(':customer-service-domain:customer-application-service').projectDir =
-        file('customer-service-domain/customer-apllication-service')
+        file('customer-service-domain/customer-application-service')

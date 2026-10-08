@@ -33,7 +33,7 @@
                 <projects>
                   <project path="$PROJECT_DIR$/microservices/customer-service" />
                   <project path="$PROJECT_DIR$/microservices/customer-service/customer-service-domain" />
-                  <project path="$PROJECT_DIR$/microservices/customer-service/customer-service-domain/customer-apllication-service" />
+                  <project path="$PROJECT_DIR$/microservices/customer-service/customer-service-domain/customer-application-service" />
                   <project path="$PROJECT_DIR$/microservices/customer-service/customer-service-domain/customer-domain-core" />
                   <project path="$PROJECT_DIR$/microservices/customer-service/customer-service-main" />
                   <project path="$PROJECT_DIR$/microservices/customer-service/customer-service-message" />
@@ -56,7 +56,7 @@
             <option value="$PROJECT_DIR$/microservices/business-service" />
             <option value="$PROJECT_DIR$/microservices/customer-service" />
             <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-domain" />
-            <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-domain/customer-apllication-service" />
+            <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-domain/customer-application-service" />
             <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-domain/customer-domain-core" />
             <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-main" />
             <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-message" />

@@ -1,8 +1,0 @@
-plugins {
-    id 'base'
-}
-
-tasks.named('build') {
-    dependsOn gradle.includedBuild('business-service').task(':build')
-    dependsOn gradle.includedBuild('customer-service').task(':build')
-}

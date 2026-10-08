@@ -6,10 +6,9 @@ pluginManagement {
         mavenCentral()
     }
 }
+
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
     }
 }
-rootProject.name = 'business-service'
-includeBuild '../../istad-common'
