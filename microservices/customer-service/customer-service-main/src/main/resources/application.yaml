@@ -1,2 +1,14 @@
 server:
   port: 8282
+
+spring:
+  config:
+    import: optional:file:./microservices/customer-service/.env.local[.properties]
+  datasource:
+    url: ${CUSTOMER_DB_URL:jdbc:postgresql://localhost:5432/istad_customer}
+    username: ${CUSTOMER_DB_USERNAME}
+    password: ${CUSTOMER_DB_PASSWORD}
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
