@@ -25,6 +25,7 @@ public class BaseEntity <ID>{
         return Objects.hashCode(id);
     }
 
-    protected <ID> void setId(ID customerId) {
+    protected void setId(ID customerId) {
+        this.id = customerId;
     }
 }

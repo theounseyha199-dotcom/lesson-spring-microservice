@@ -1,7 +1,12 @@
 package kh.edu.istad.platform.customer.domain.port.out;
 
-import istad.edu.platform.customer.entity.Customer;
+import kh.edu.istad.common.domain.valueobject.CustomerId;
+import kh.edu.istad.platform.customer.domain.entity.Customer;
+
+import java.util.Optional;
 
 public interface CustomerRepository {
     Customer save(Customer customer);
+
+    Optional<Customer> findById(CustomerId id);
 }
