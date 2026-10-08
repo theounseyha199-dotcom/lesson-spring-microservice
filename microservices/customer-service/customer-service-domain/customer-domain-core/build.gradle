@@ -2,14 +2,7 @@ plugins {
     id 'java-common-conventions'
 }
 
-repositories {
-    mavenCentral()
-}
 
 dependencies {
-    api 'kh.edu.istad:istad-common-domain:1.0.0'
-}
-
-test {
-    useJUnitPlatform()
+    api 'kh.edu.istad:istad-common-domain'
 }

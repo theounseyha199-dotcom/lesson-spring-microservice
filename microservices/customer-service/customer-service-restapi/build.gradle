@@ -1,17 +1,7 @@
-plugins {
-    id 'java'
-}
-
-repositories {
-    mavenCentral()
+plugins{
+    id 'spring-common-conventions'
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:6.0.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
-test {
-    useJUnitPlatform()
+    api project(':customer-service-domain:customer-application-service')
 }

@@ -1,5 +1,24 @@
+//plugins {
+//    id 'java-library'
+//}
+//
+//group = 'kh.edu.istad.common'
+//version = '1.0-SNAPSHOT'
+//
+//repositories {
+//    mavenCentral()
+//}
+//
+//dependencies {
+//    api project(':istad-common-domain')
+//}
+//
+//tasks.named('build') {
+//    dependsOn subprojects.collect { it.path + ':build' }
+//}
+
 plugins {
-    id 'java-library'
+    id 'java'
 }
 
 group = 'kh.edu.istad.common'
@@ -9,10 +28,3 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    api project(':istad-common-domain')
-}
-
-tasks.named('build') {
-    dependsOn subprojects.collect { it.path + ':build' }
-}

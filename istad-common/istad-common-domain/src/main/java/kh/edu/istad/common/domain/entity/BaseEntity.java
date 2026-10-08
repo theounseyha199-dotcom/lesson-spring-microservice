@@ -1,0 +1,30 @@
+package kh.edu.istad.common.domain.entity;
+
+import java.util.Objects;
+
+public class BaseEntity <ID>{
+    private  ID id;
+
+
+    public ID getId() {
+        return id;
+    }
+    public void SetId(ID id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseEntity<?> that = (BaseEntity<?>) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    protected <ID> void setId(ID customerId) {
+    }
+}

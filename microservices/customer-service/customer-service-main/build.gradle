@@ -3,9 +3,11 @@ plugins {
 }
 
 dependencies {
+    implementation project(':customer-service-domain:customer-domain-core')
     implementation project(':customer-service-domain:customer-application-service')
-    implementation project(':customer-service-restapi')
-    implementation project(':customer-service-persistence')
     implementation project(':customer-service-message')
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation project(':customer-service-persistence')
+    implementation project(':customer-service-restapi')
+
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 }
