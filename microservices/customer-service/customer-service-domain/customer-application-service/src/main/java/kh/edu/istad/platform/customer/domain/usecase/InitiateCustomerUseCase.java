@@ -20,7 +20,7 @@ public class InitiateCustomerUseCase {
     private final CustomerRepository customerRepository;
 
     public InitiateCustomerResult execute(InitiateCustomerCommand command) {
-        log.info("initiate customer usecase: {}", command);
+        log.info("Initiating customer");
         Customer customer = Customer.builder()
                 .username(command.username())
                 .familyName(command.familyName())

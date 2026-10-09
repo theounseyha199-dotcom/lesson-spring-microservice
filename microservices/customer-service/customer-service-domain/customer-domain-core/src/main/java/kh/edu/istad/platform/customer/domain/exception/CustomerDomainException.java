@@ -7,7 +7,4 @@ public class CustomerDomainException extends DomainException {
         super(message);
     }
 
-    public CustomerDomainException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

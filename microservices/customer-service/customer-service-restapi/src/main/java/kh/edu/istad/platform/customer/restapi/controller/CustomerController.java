@@ -4,6 +4,7 @@ import kh.edu.istad.platform.customer.domain.dto.InitiateCustomerResult;
 import kh.edu.istad.platform.customer.domain.dto.UpdateCustomerCommand;
 import kh.edu.istad.platform.customer.domain.dto.UpdateCustomerResult;
 import kh.edu.istad.platform.customer.domain.event.CustomerDeactivatedEvent;
+import kh.edu.istad.platform.customer.domain.exception.CustomerDomainException;
 import kh.edu.istad.platform.customer.domain.exception.CustomerNotFoundException;
 import kh.edu.istad.platform.customer.domain.usecase.DeactivateCustomerUseCase;
 import kh.edu.istad.platform.customer.domain.usecase.InitiateCustomerUseCase;
@@ -56,6 +57,11 @@ public class CustomerController {
     @ExceptionHandler(CustomerNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void customerNotFound() {
+    }
+
+    @ExceptionHandler(CustomerDomainException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public void customerConflict() {
     }
 
     @PutMapping("/{customerId}/deactivate")
