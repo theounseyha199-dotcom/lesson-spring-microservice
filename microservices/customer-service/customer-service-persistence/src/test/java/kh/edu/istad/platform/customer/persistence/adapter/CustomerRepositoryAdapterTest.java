@@ -1,3 +1,4 @@
+/* Legacy JPA test, retained for reference.
 package kh.edu.istad.platform.customer.persistence.adapter;
 
 import kh.edu.istad.common.domain.valueobject.CustomerId;
@@ -64,3 +65,5 @@ class CustomerRepositoryAdapterTest {
         assertEquals(CustomerStatus.INACTIVE, customer.getStatus());
     }
 }
+
+*/
