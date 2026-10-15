@@ -1,0 +1,13 @@
+server:
+  port: ${ORDER_PORT:8081}
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: ${ORDER_DB_URL:jdbc:postgresql://localhost:5433/istad_order}
+    username: ${ORDER_DB_USERNAME:istad}
+    password: ${ORDER_DB_PASSWORD:istad}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update

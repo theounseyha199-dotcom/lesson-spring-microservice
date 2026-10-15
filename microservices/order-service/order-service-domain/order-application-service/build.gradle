@@ -1,0 +1,4 @@
+plugins { id 'spring-common-conventions' }
+dependencies {
+    api project(':order-service-domain:order-domain-core')
+}
