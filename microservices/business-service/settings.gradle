@@ -1,14 +1,16 @@
 pluginManagement {
     includeBuild('../../build-logic')
-
     repositories {
         gradlePluginPortal()
         mavenCentral()
     }
 }
-
 dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
+    repositories { mavenCentral() }
 }
+rootProject.name = 'business-service'
+include 'business-service-main'
+include 'business-service-domain:business-domain-core'
+include 'business-service-domain:business-application-service'
+include 'business-service-restapi'
+include 'business-service-persistence'

@@ -1,0 +1,5 @@
+plugins { id 'spring-common-conventions' }
+dependencies {
+    api project(':business-service-domain:business-domain-core')
+    implementation 'io.projectreactor:reactor-core'
+}
