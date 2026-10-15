@@ -1,0 +1,7 @@
+server:
+  port: ${PAYMENT_PORT:8083}
+spring:
+  application:
+    name: payment-service
+  mongodb:
+    uri: ${PAYMENT_MONGO_URI:mongodb://mongod:mongod@localhost:2026/istad_payment?authSource=admin}
