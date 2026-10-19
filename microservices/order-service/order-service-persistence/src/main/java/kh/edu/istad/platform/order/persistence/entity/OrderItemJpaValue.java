@@ -1,4 +1,4 @@
-package kh.edu.istad.platform.order.persistence;
+package kh.edu.istad.platform.order.persistence.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

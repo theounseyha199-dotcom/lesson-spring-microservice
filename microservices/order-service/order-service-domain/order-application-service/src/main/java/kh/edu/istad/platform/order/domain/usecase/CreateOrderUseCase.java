@@ -1,8 +1,10 @@
-package kh.edu.istad.platform.order.application;
+package kh.edu.istad.platform.order.domain.usecase;
 
-import kh.edu.istad.platform.order.domain.Order;
-import kh.edu.istad.platform.order.domain.OrderItem;
+import kh.edu.istad.platform.order.domain.entity.Order;
+import kh.edu.istad.platform.order.domain.entity.OrderItem;
 import org.springframework.stereotype.Component;
+import kh.edu.istad.platform.order.domain.dto.CreateOrderCommand;
+import kh.edu.istad.platform.order.domain.port.out.OrderRepository;
 import java.time.Instant;
 import java.util.UUID;
 

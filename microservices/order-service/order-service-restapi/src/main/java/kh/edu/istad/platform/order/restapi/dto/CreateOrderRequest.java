@@ -1,4 +1,4 @@
-package kh.edu.istad.platform.order.restapi;
+package kh.edu.istad.platform.order.restapi.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;

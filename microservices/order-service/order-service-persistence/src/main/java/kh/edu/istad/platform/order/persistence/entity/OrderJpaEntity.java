@@ -1,4 +1,4 @@
-package kh.edu.istad.platform.order.persistence;
+package kh.edu.istad.platform.order.persistence.entity;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
-import kh.edu.istad.platform.order.domain.Order;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -48,18 +47,16 @@ public class OrderJpaEntity {
 
     protected OrderJpaEntity() {} // JPA
 
-    public static OrderJpaEntity from(Order order) {
-        var entity = new OrderJpaEntity();
-        entity.id = order.id();
-        entity.customerId = order.customerId();
-        entity.businessId = order.businessId();
-        entity.deliveryAddress = order.deliveryAddress();
-        entity.total = order.total();
-        entity.status = order.status().name();
-        entity.createdAt = order.createdAt();
-        entity.items = order.items().stream().map(item ->
-                new OrderItemJpaValue(item.productId(), item.quantity(), item.unitPrice())).toList();
-        return entity;
+    public OrderJpaEntity(UUID id, UUID customerId, UUID businessId, String deliveryAddress,
+                          BigDecimal total, String status, Instant createdAt, List<OrderItemJpaValue> items) {
+        this.id = id;
+        this.customerId = customerId;
+        this.businessId = businessId;
+        this.deliveryAddress = deliveryAddress;
+        this.total = total;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.items = new ArrayList<>(items);
     }
 
     public UUID getId() { return id; }

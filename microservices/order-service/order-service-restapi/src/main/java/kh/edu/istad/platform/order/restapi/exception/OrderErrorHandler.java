@@ -1,4 +1,4 @@
-package kh.edu.istad.platform.order.restapi;
+package kh.edu.istad.platform.order.restapi.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,8 @@
 package kh.edu.istad.platform.order.domain;
 
 import org.junit.jupiter.api.Test;
+import kh.edu.istad.platform.order.domain.entity.Order;
+import kh.edu.istad.platform.order.domain.entity.OrderItem;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;

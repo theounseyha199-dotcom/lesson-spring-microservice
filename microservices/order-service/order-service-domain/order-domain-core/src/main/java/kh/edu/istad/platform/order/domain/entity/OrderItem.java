@@ -1,4 +1,4 @@
-package kh.edu.istad.platform.order.domain;
+package kh.edu.istad.platform.order.domain.entity;
 
 import java.math.BigDecimal;
 import java.util.Objects;
