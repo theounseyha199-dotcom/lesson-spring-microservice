@@ -9,17 +9,25 @@ import kh.edu.istad.platform.customer.domain.valueobject.PhoneNumber;
 
 import java.util.UUID;
 
+/** Customer aggregate: validates contact details and controls identity, membership, and status changes. */
 public class Customer extends AggregateRoot<CustomerId> {
-    private final String username;
+    private String username;
     private String familyName;
     private String givenName;
-    private final Email email;
-    private final PhoneNumber phoneNumber;
+    private Email email;
+    private PhoneNumber phoneNumber;
+    private UUID segmentId;
+    private Long version;
     private CustomerStatus status;
 
     // Domain Critical Logic
     public void initiateCustomer() {
         validateCustomer();
+        validateName(username, "username");
+        validateName(familyName, "familyName");
+        validateName(givenName, "givenName");
+        if (email == null || phoneNumber == null) throw new IllegalArgumentException("Email and phone are required");
+        username = username.trim().toLowerCase(java.util.Locale.ROOT);
         super.setId(new CustomerId(UUID.randomUUID()));
         status = CustomerStatus.ACTIVE;
     }
@@ -34,9 +42,8 @@ public class Customer extends AggregateRoot<CustomerId> {
     }
 
     public void updateCustomer(String familyName, String givenName) {
-        if (familyName == null || givenName == null) {
-            throw new CustomerDomainException("familyName and givenName must not be null");
-        }
+        validateName(familyName, "familyName");
+        validateName(givenName, "givenName");
         this.familyName = familyName;
         this.givenName = givenName;
     }
@@ -48,6 +55,32 @@ public class Customer extends AggregateRoot<CustomerId> {
         status = CustomerStatus.INACTIVE;
     }
 
+
+    // DELETED is a terminal state and can only be applied by the atomic soft-delete operation.
+    public void changeStatus(CustomerStatus next) {
+        if (status == CustomerStatus.DELETED || next == null || next == CustomerStatus.DELETED)
+            throw new CustomerDomainException("Only ACTIVE and INACTIVE status transitions are allowed");
+        status = next;
+    }
+
+    public void updateDetails(String username, String email, String phoneNumber) {
+        if (username != null) {
+            validateName(username, "username");
+            this.username = username.trim().toLowerCase(java.util.Locale.ROOT);
+        }
+        if (email != null) this.email = new Email(email);
+        if (phoneNumber != null) this.phoneNumber = new PhoneNumber(phoneNumber);
+    }
+
+    private static void validateName(String value, String field) {
+        if (value == null || value.isBlank() || value.length() > 100)
+            throw new IllegalArgumentException(field + " must contain 1 to 100 characters");
+    }
+
+    public Long getVersion() { return version; }
+
+    public UUID getSegmentId() { return segmentId; }
+    public void assignSegment(UUID segmentId) { this.segmentId = segmentId; }
 
     public String getUsername() {
         return username;
@@ -81,6 +114,8 @@ public class Customer extends AggregateRoot<CustomerId> {
         email = builder.email;
         phoneNumber = builder.phoneNumber;
         status = builder.status;
+        segmentId = builder.segmentId;
+        version = builder.version;
     }
 
     public static Builder builder() {
@@ -96,6 +131,8 @@ public class Customer extends AggregateRoot<CustomerId> {
         private Email email;
         private PhoneNumber phoneNumber;
         private CustomerStatus status;
+        private UUID segmentId;
+        private Long version;
 
         private Builder() {
         }
@@ -134,6 +171,10 @@ public class Customer extends AggregateRoot<CustomerId> {
             status = val;
             return this;
         }
+
+        public Builder version(Long value) { version = value; return this; }
+
+        public Builder segmentId(UUID value) { segmentId = value; return this; }
 
         public Customer build() {
             return new Customer(this);

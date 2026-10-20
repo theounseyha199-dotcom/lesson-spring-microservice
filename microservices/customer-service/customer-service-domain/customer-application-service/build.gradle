@@ -4,4 +4,8 @@ plugins {
 
 dependencies {
     api project(':customer-service-domain:customer-domain-core')
+    api 'io.projectreactor:reactor-core'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

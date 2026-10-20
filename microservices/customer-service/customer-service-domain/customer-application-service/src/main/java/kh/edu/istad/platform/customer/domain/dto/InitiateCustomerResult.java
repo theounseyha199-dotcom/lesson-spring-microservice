@@ -8,6 +8,7 @@ public record InitiateCustomerResult(
         String familyName,
         String givenName,
         String email,
-        String phoneNumber
+        String phoneNumber,
+        java.util.UUID segmentId
 ) {
 }

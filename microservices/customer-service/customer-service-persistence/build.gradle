@@ -8,6 +8,7 @@ dependencies {
     // implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     testImplementation 'io.projectreactor:reactor-test'
+    testCompileOnly 'org.mapstruct:mapstruct:1.6.3'
     // runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

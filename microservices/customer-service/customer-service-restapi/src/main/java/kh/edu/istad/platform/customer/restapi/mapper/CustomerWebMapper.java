@@ -3,6 +3,8 @@ package kh.edu.istad.platform.customer.restapi.mapper;
 import kh.edu.istad.platform.customer.domain.dto.InitiateCustomerCommand;
 import kh.edu.istad.platform.customer.domain.dto.InitiateCustomerResult;
 import kh.edu.istad.platform.customer.domain.dto.UpdateCustomerResult;
+import kh.edu.istad.platform.customer.domain.dto.QueryCustomerResult;
+import kh.edu.istad.platform.customer.restapi.dto.CustomerQueryResponse;
 import kh.edu.istad.platform.customer.restapi.dto.CustomerInitiateRequest;
 import kh.edu.istad.platform.customer.restapi.dto.CustomerInitiateResponse;
 import kh.edu.istad.platform.customer.restapi.dto.CustomerUpdateResponse;
@@ -16,5 +18,7 @@ public interface CustomerWebMapper {
     CustomerInitiateResponse toResponse(InitiateCustomerResult result);
 
     CustomerUpdateResponse toResponse(UpdateCustomerResult result);
+
+    CustomerQueryResponse toResponse(QueryCustomerResult result);
 
 }

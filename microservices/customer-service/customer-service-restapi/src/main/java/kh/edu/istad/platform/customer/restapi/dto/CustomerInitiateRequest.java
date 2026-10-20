@@ -10,8 +10,12 @@ public record CustomerInitiateRequest(
         @NotBlank
         String givenName,
         @NotBlank
+        @jakarta.validation.constraints.Email
+        @jakarta.validation.constraints.Size(max = 254)
         String email,
         @NotBlank
-        String phoneNumber
+        @jakarta.validation.constraints.Pattern(regexp = "\\+?[0-9]{8,15}")
+        String phoneNumber,
+        java.util.UUID segmentId
 ) {
 }

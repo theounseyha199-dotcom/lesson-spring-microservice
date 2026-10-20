@@ -1,5 +1,7 @@
 # Microservices assignment: local run guide
 
+For frontend API contracts, browser proxy setup, and a TypeScript Fetch client, see the [frontend integration guide](../docs/FRONTEND_INTEGRATION.md).
+
 The order service uses Spring WebMVC, Spring Data JPA, and PostgreSQL, as required
 by the assignment. The business service uses Spring WebFlux and Reactive MongoDB.
 Payment registration uses WebMVC and MongoDB.
