@@ -9,6 +9,7 @@ dependencyResolutionManagement {
     repositories { mavenCentral() }
 }
 rootProject.name = 'order-service'
+includeBuild '../../istad-common'
 include 'order-service-main'
 include 'order-service-domain:order-domain-core'
 include 'order-service-domain:order-application-service'

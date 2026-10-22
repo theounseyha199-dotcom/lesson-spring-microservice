@@ -2,6 +2,7 @@ package kh.edu.istad.platform.order.persistence.mapper;
 
 import kh.edu.istad.platform.order.domain.entity.Order;
 import kh.edu.istad.platform.order.domain.entity.OrderItem;
+import kh.edu.istad.common.domain.valueobject.OrderStatus;
 import kh.edu.istad.platform.order.persistence.entity.OrderJpaEntity;
 import kh.edu.istad.platform.order.persistence.entity.OrderItemJpaValue;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,6 @@ public class OrderPersistenceMapper {
         var items = entity.getItems().stream().map(item -> new OrderItem(
                 item.getProductId(), item.getQuantity(), item.getUnitPrice())).toList();
         return new Order(entity.getId(), entity.getCustomerId(), entity.getBusinessId(),
-                entity.getDeliveryAddress(), items, Order.Status.valueOf(entity.getStatus()), entity.getCreatedAt());
+                entity.getDeliveryAddress(), items, OrderStatus.valueOf(entity.getStatus()), entity.getCreatedAt());
     }
 }

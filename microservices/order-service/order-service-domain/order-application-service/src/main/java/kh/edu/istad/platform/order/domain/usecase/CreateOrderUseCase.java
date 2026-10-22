@@ -2,6 +2,7 @@ package kh.edu.istad.platform.order.domain.usecase;
 
 import kh.edu.istad.platform.order.domain.entity.Order;
 import kh.edu.istad.platform.order.domain.entity.OrderItem;
+import kh.edu.istad.common.domain.valueobject.OrderStatus;
 import org.springframework.stereotype.Component;
 import kh.edu.istad.platform.order.domain.dto.CreateOrderCommand;
 import kh.edu.istad.platform.order.domain.port.out.OrderRepository;
@@ -20,7 +21,7 @@ public class CreateOrderUseCase {
             return new OrderItem(i.productId(), i.quantity(), i.unitPrice());
         }).toList();
         var order = new Order(UUID.randomUUID(), command.customerId(), command.businessId(),
-                command.deliveryAddress(), items, Order.Status.PENDING, Instant.now());
+                command.deliveryAddress(), items, OrderStatus.PENDING, Instant.now());
         return repository.save(order);
     }
 }
