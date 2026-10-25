@@ -1,4 +1,4 @@
-plugins { id 'spring-boot-common-conventions' }
+plugins { id 'discovery-client-conventions' }
 dependencies {
     implementation project(':payment-service-domain:payment-application-service')
     implementation project(':payment-service-restapi')

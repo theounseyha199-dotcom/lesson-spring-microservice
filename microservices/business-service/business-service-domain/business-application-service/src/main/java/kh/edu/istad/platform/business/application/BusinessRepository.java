@@ -5,4 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface BusinessRepository {
     Mono<Business> save(Business business);
+    Mono<Business> findById(java.util.UUID id);
 }

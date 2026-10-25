@@ -1,5 +1,13 @@
 # Microservices assignment: local run guide
 
+Assignment reports:
+
+- [Part 1: hard-coded REST communication, tests, and screenshots](../docs/part1-hardcoded-communication.md)
+- [Part 2: Eureka research](../docs/part2-eureka-research.md)
+- [Part 3: Eureka integration, screenshots, and comparison](../docs/part3-eureka-integration.md)
+- [Part 4: Eureka lifecycle, health tracking, and discovery patterns](../docs/part4-eureka-experiments.md)
+- [Eureka implementation, load balancing, and health monitoring](../docs/eureka-discovery.md)
+
 The order service uses Spring WebMVC, Spring Data JPA, and PostgreSQL, as required
 by the assignment. The business service uses Spring WebFlux and Reactive MongoDB.
 Payment registration uses WebMVC and MongoDB.
@@ -71,5 +79,7 @@ curl -i -X POST http://localhost:8083/api/payments \
 ```
 
 The payment endpoint records a `PENDING` payment. It does not charge a card or
-complete a payment. The services currently accept IDs supplied in requests;
-they do not yet verify referenced records across service boundaries.
+complete a payment. The standalone create endpoints accept IDs supplied in requests. Use the new
+`POST /api/checkout` endpoint on order-service for cross-service customer and
+business validation followed by order persistence and payment registration.
+See [the checkout guide](../docs/checkout-workflow.md).

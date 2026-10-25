@@ -1,5 +1,5 @@
 plugins {
-    id 'spring-boot-common-conventions'
+    id 'discovery-client-conventions'
 }
 
 dependencies {

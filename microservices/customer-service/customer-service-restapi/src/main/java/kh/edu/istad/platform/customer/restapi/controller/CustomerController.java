@@ -30,6 +30,17 @@ public class CustomerController {
     private final UpdateCustomerUseCase updateCustomerUseCase;
     private final DeactivateCustomerUseCase deactivateCustomerUseCase;
     private final CustomerWebMapper customerWebMapper;
+    private final kh.edu.istad.platform.customer.domain.port.out.CustomerRepository repository;
+
+    @GetMapping("/{customerId}")
+    public CustomerSummary find(@PathVariable("customerId") UUID customerId) {
+        var customer = repository.findById(new kh.edu.istad.common.domain.valueobject.CustomerId(customerId))
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND));
+        return new CustomerSummary(customerId, customer.getUsername(), customer.getStatus().name());
+    }
+
+    public record CustomerSummary(UUID customerId, String username, String status) {}
+
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping

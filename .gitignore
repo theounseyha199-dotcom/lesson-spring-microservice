@@ -46,3 +46,8 @@ bin/
 microservices/customer-service/.env.local
 microservices/customer-service/run-local.sh
 .idea/dataSources.xml
+
+# Local logs from the repeatable Eureka verification (keep screenshots and JSON).
+docs/screenshots/part3/*.log
+docs/screenshots/part4/*.log
+docs/screenshots/checkout/*.log

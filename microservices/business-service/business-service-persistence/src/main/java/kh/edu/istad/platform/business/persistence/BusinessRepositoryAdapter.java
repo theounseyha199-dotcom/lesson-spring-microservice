@@ -9,6 +9,11 @@ import reactor.core.publisher.Mono;
 public class BusinessRepositoryAdapter implements BusinessRepository {
     private final BusinessMongoRepository mongo;
     public BusinessRepositoryAdapter(BusinessMongoRepository mongo) { this.mongo = mongo; }
+    @Override public Mono<Business> findById(java.util.UUID id) {
+        return mongo.findById(id.toString()).map(d -> new Business(
+                java.util.UUID.fromString(d.id()), d.name(), d.email(), d.address(),
+                Business.Status.valueOf(d.status()), d.createdAt()));
+    }
     @Override public Mono<Business> save(Business business) {
         var document = new BusinessDocument(business.id().toString(), business.name(),
                 business.email(), business.address(), business.status().name(), business.createdAt());

@@ -1,5 +1,8 @@
-plugins { id 'spring-boot-common-conventions' }
+plugins { id 'discovery-client-conventions' }
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
     implementation project(':order-service-domain:order-application-service')
     implementation project(':order-service-restapi')
     implementation project(':order-service-persistence')

@@ -1,0 +1,727 @@
+{
+  "startedAt": "2026-10-23T12:27:23.078Z",
+  "requests": [
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "port": "8082",
+        "service": "business-service"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "port": "8082",
+        "service": "business-service"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "port": "8082",
+        "service": "business-service"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "port": "8082",
+        "service": "business-service"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "port": "8082",
+        "service": "business-service"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "two-instances",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "port": "8082",
+        "service": "business-service"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 26,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 1056,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:27:52.983Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-18"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 2065,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:27:53.994Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-19"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 3076,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 4084,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:27:56.013Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-21"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 5093,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 6100,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:27:58.029Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-23"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 7109,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 8117,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:00.044Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-25"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 9127,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 10134,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:02.063Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-27"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 11143,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 12150,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:04.079Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-29"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 13159,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 14165,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:06.094Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-31"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 15174,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 16180,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:08.109Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-33"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 17188,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 18196,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:10.125Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-35"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 19204,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 20212,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:12.141Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-37"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 21220,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 22226,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:14.155Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-39"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 23235,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 24242,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:16.171Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-41"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 25250,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 26257,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:18.186Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-43"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 27264,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:19.192Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-44"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 28272,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 29278,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:21.207Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-46"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 30286,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 31293,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503,
+      "body": {
+        "timestamp": "2026-10-23T12:28:23.222Z",
+        "path": "/api/discovery/business",
+        "status": 503,
+        "error": "Service Unavailable",
+        "requestId": "30e3a56c-48"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 32302,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 33310,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 34318,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 35327,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 36335,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    },
+    {
+      "phase": "failure-convergence",
+      "elapsedMs": 37345,
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200,
+      "body": {
+        "service": "business-service",
+        "port": "8182"
+      }
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "01-eureka-two-business-instances.png",
+      "url": "http://localhost:8761",
+      "status": 200
+    },
+    {
+      "file": "02-discovered-business-8182.png",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200
+    },
+    {
+      "file": "02-discovered-business-8082.png",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200
+    },
+    {
+      "file": "03-surviving-business-8182.png",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200
+    },
+    {
+      "file": "04-eureka-after-failure.png",
+      "url": "http://localhost:8761",
+      "status": 200
+    },
+    {
+      "file": "05-no-business-available.png",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503
+    }
+  ],
+  "initialRegistry": [
+    {
+      "instanceId": "business-service:192.168.1.27:8082",
+      "hostName": "127.0.0.1",
+      "app": "BUSINESS-SERVICE",
+      "ipAddr": "127.0.0.1",
+      "status": "UP",
+      "overriddenStatus": "UNKNOWN",
+      "port": {
+        "$": 8082,
+        "@enabled": "true"
+      },
+      "securePort": {
+        "$": 443,
+        "@enabled": "false"
+      },
+      "countryId": 1,
+      "dataCenterInfo": {
+        "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+        "name": "MyOwn"
+      },
+      "leaseInfo": {
+        "renewalIntervalInSecs": 5,
+        "durationInSecs": 15,
+        "registrationTimestamp": 1792758458204,
+        "lastRenewalTimestamp": 1792758477664,
+        "evictionTimestamp": 0,
+        "serviceUpTimestamp": 1792758457535
+      },
+      "metadata": {
+        "management.port": "8082"
+      },
+      "homePageUrl": "http://127.0.0.1:8082/",
+      "statusPageUrl": "http://127.0.0.1:8082/actuator/info",
+      "healthCheckUrl": "http://127.0.0.1:8082/actuator/health",
+      "vipAddress": "business-service",
+      "secureVipAddress": "business-service",
+      "isCoordinatingDiscoveryServer": "false",
+      "lastUpdatedTimestamp": "1792758458204",
+      "lastDirtyTimestamp": "1792758457142",
+      "actionType": "ADDED"
+    },
+    {
+      "instanceId": "business-service:192.168.1.27:8182",
+      "hostName": "127.0.0.1",
+      "app": "BUSINESS-SERVICE",
+      "ipAddr": "127.0.0.1",
+      "status": "UP",
+      "overriddenStatus": "UNKNOWN",
+      "port": {
+        "$": 8182,
+        "@enabled": "true"
+      },
+      "securePort": {
+        "$": 443,
+        "@enabled": "false"
+      },
+      "countryId": 1,
+      "dataCenterInfo": {
+        "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+        "name": "MyOwn"
+      },
+      "leaseInfo": {
+        "renewalIntervalInSecs": 5,
+        "durationInSecs": 15,
+        "registrationTimestamp": 1792758458205,
+        "lastRenewalTimestamp": 1792758477664,
+        "evictionTimestamp": 0,
+        "serviceUpTimestamp": 1792758457535
+      },
+      "metadata": {
+        "management.port": "8182"
+      },
+      "homePageUrl": "http://127.0.0.1:8182/",
+      "statusPageUrl": "http://127.0.0.1:8182/actuator/info",
+      "healthCheckUrl": "http://127.0.0.1:8182/actuator/health",
+      "vipAddress": "business-service",
+      "secureVipAddress": "business-service",
+      "isCoordinatingDiscoveryServer": "false",
+      "lastUpdatedTimestamp": "1792758458205",
+      "lastDirtyTimestamp": "1792758457166",
+      "actionType": "ADDED"
+    }
+  ],
+  "baselineDisabled": {
+    "url": "http://localhost:8081/api/hardcoded/business",
+    "status": 404,
+    "body": {
+      "timestamp": "2026-10-23T12:27:51.929Z",
+      "path": "/api/hardcoded/business",
+      "status": 404,
+      "error": "Not Found",
+      "requestId": "30e3a56c-16"
+    }
+  },
+  "convergenceMs": 37347,
+  "survivingRegistry": [
+    {
+      "instanceId": "business-service:192.168.1.27:8182",
+      "hostName": "127.0.0.1",
+      "app": "BUSINESS-SERVICE",
+      "ipAddr": "127.0.0.1",
+      "status": "UP",
+      "overriddenStatus": "UNKNOWN",
+      "port": {
+        "$": 8182,
+        "@enabled": "true"
+      },
+      "securePort": {
+        "$": 443,
+        "@enabled": "false"
+      },
+      "countryId": 1,
+      "dataCenterInfo": {
+        "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+        "name": "MyOwn"
+      },
+      "leaseInfo": {
+        "renewalIntervalInSecs": 5,
+        "durationInSecs": 15,
+        "registrationTimestamp": 1792758458205,
+        "lastRenewalTimestamp": 1792758512709,
+        "evictionTimestamp": 0,
+        "serviceUpTimestamp": 1792758457535
+      },
+      "metadata": {
+        "management.port": "8182"
+      },
+      "homePageUrl": "http://127.0.0.1:8182/",
+      "statusPageUrl": "http://127.0.0.1:8182/actuator/info",
+      "healthCheckUrl": "http://127.0.0.1:8182/actuator/health",
+      "vipAddress": "business-service",
+      "secureVipAddress": "business-service",
+      "isCoordinatingDiscoveryServer": "false",
+      "lastUpdatedTimestamp": "1792758458205",
+      "lastDirtyTimestamp": "1792758457166",
+      "actionType": "ADDED"
+    }
+  ],
+  "allUnavailable": {
+    "url": "http://localhost:8081/api/discovery/business",
+    "status": 503,
+    "body": {
+      "timestamp": "2026-10-23T12:28:34.630Z",
+      "path": "/api/discovery/business",
+      "status": 503,
+      "error": "Service Unavailable",
+      "requestId": "cc1f166c-58"
+    }
+  },
+  "completedAt": "2026-10-23T12:28:34.632Z"
+}

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public record CreateOrderRequest(@NotNull UUID customerId, @NotNull UUID businessId,
                                  @NotBlank String deliveryAddress,
-                                 @NotEmpty List<@Valid Item> items) {
+                                 @NotEmpty List<@NotNull @Valid Item> items) {
     public record Item(@NotNull UUID productId, @Min(1) int quantity,
                        @NotNull @DecimalMin("0.01") BigDecimal unitPrice) {}
 }

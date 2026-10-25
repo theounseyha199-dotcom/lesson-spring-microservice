@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-10-23T12:20:07.359Z",
+  "phase": "moved",
+  "results": [
+    {
+      "url": "http://localhost:8182/api/businesses/instance",
+      "status": 200,
+      "contentType": "application/json",
+      "body": {
+        "port": "8182",
+        "service": "business-service"
+      },
+      "screenshot": "03-business-moved-8182.png"
+    },
+    {
+      "url": "http://localhost:8081/api/hardcoded/business",
+      "status": 503,
+      "contentType": "text/html;charset=UTF-8",
+      "body": "<html><body><h1>Whitelabel Error Page</h1><p>This application has no configured error view, so you are seeing this as a fallback.</p><div id='created'>Fri Oct 23 19:20:07 GMT+07:00 2026</div><div>[0f6097e6-8] There was an unexpected error (type=Service Unavailable, status=503).</div></body></html>",
+      "screenshot": "04-order-hardcoded-failure.png"
+    }
+  ]
+}

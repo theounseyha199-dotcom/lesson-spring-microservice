@@ -8,6 +8,8 @@ import java.math.RoundingMode;
 public record Money(
         BigDecimal amount
 ) {
+    public static final Money ZERO = new Money(BigDecimal.ZERO);
+
     public void isGreaterThanZero() {
         if (!(amount.compareTo(BigDecimal.ZERO) > 0)) {
             System.out.println("Money is not greater than zero");
