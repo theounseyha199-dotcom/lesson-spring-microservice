@@ -17,7 +17,7 @@ public class BusinessDiscoveryController {
     private final WebClient businessClient;
 
     public BusinessDiscoveryController(@LoadBalanced WebClient.Builder builder) {
-        this.businessClient = builder.baseUrl("http://business-service").build();
+        this.businessClient = builder.clone().baseUrl("http://business-service").build();
     }
 
     @GetMapping("/api/discovery/business")

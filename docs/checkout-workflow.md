@@ -7,7 +7,7 @@ workflow across Customer, Business, Order, and Payment services:
 
 1. Look up the customer and reject missing or inactive customers.
 2. Look up the business and reject missing or inactive businesses.
-3. Calculate the order total from validated items and save the PENDING order in PostgreSQL.
+3. Calculate the order total from validated items and save the PENDING order in MongoDB.
 4. Send the saved order ID, customer ID, and calculated total to payment-service.
 5. Return HTTP 201 with the order and its PENDING payment registration.
 
@@ -46,7 +46,7 @@ payment amount supplied by the checkout caller.
 - `BusinessRepository.findById` uses the reactive MongoDB adapter; Customer reuses
   its existing repository lookup. Missing records return HTTP 404.
 - Bean Validation rejects invalid quantities, prices, missing fields, and null items.
-- Order runs Spring MVC because JPA and the checkout orchestration are blocking.
+- Order runs Spring MVC because MongoDB persistence and the checkout orchestration are blocking.
   WebFlux remains available for WebClient; the application no longer enables a
   competing WebFlux server configuration.
 - The historical hard-coded path is explicit and opt-in. Normal startup uses discovery.
@@ -78,28 +78,12 @@ consistency problems.
 
 ## Reproduce the integration test
 
-Build all four services with JDK 25 using the commands in deployment/README.md,
-and build discovery-server with `./gradlew -p microservices/discovery-server test bootJar`.
-Run `node scripts/verify-checkout.mjs` with PostgreSQL's initdb, postgres, pg_isready,
-createdb, MongoDB's mongod, and Playwright/Chromium installed. Set PLAYWRIGHT_MODULE,
-CHROMIUM_PATH, or JAVA_COMMAND if needed. Ports 8761, 8081–8084, 15434, and 12027
-must be free.
+Build all four services with JDK 25 using deployment/README.md.
+Run `node scripts/verify-checkout.mjs` with `consul`, `mongod`, and
+Playwright/Chromium installed. Set PLAYWRIGHT_MODULE, CHROMIUM_PATH, or
+JAVA_COMMAND if needed. Ports 8500, 8300–8302, 8600, 8081–8084 and 12027 must be free.
 
-The script starts private database directories under /tmp, launches the registry
-and all four services, tests both communication modes and failure contracts,
-records responses in docs/screenshots/checkout/results.json, and captures the
-actual registry dashboard plus a clearly labeled browser-rendered POST-response
-transcript. It stops only its child processes. Temporary database directories
-remain available for inspection and can be removed after verification.
-
-## Recorded verification
-
-Completed 2026-10-25T11:52:11.475Z (UTC). All service builds and existing tests passed.
-The live script verified hard-coded checkout 201, discovered checkout 201,
-missing customer 404, missing business 404, null item 400, unavailable payment
-202 with the saved order, and inactive customer 409. Both successful payments
-reference their returned order IDs and use the calculated total of 10.
-
-![All four services UP](screenshots/checkout/01-four-services-up.png)
-
-![Actual checkout POST responses rendered in browser](screenshots/checkout/02-checkout-responses.png)
+The script launches isolated MongoDB and Consul processes and all four services,
+checks checkout and failure responses, and saves evidence under
+`docs/screenshots/checkout`. It stops its own child processes afterward.
+Existing screenshots are historical and should be regenerated for this setup.

@@ -32,14 +32,29 @@ public class CustomerController {
     private final CustomerWebMapper customerWebMapper;
     private final kh.edu.istad.platform.customer.domain.port.out.CustomerRepository repository;
 
+    @GetMapping
+    public java.util.List<CustomerSummary> list() {
+        return repository.findAll().stream()
+                .map(this::toSummary)
+                .toList();
+    }
+
     @GetMapping("/{customerId}")
     public CustomerSummary find(@PathVariable("customerId") UUID customerId) {
         var customer = repository.findById(new kh.edu.istad.common.domain.valueobject.CustomerId(customerId))
                 .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND));
-        return new CustomerSummary(customerId, customer.getUsername(), customer.getStatus().name());
+        return toSummary(customer);
     }
 
-    public record CustomerSummary(UUID customerId, String username, String status) {}
+    public record CustomerSummary(UUID customerId, String username, String familyName,
+                                  String givenName, String email, String phoneNumber,
+                                  String customerStatus, String customerSegmentType) {}
+
+    private CustomerSummary toSummary(kh.edu.istad.platform.customer.domain.entity.Customer customer) {
+        return new CustomerSummary(customer.getId().value(), customer.getUsername(),
+                customer.getFamilyName(), customer.getGivenName(), customer.getEmail().value(),
+                customer.getPhoneNumber().value(), customer.getStatus().name(), null);
+    }
 
 
     @ResponseStatus(HttpStatus.CREATED)

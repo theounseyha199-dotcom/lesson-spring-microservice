@@ -1,3 +1,5 @@
+> Historical learning notes: database and discovery examples below describe the previous implementation. Use [the current run guide](../deployment/README.md) for MongoDB and Consul setup.
+
 # Part 1: Hard-Coded Service Communication
 
 ## Objective and implementation

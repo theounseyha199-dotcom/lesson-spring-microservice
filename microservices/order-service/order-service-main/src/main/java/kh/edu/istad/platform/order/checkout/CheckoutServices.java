@@ -37,7 +37,7 @@ public class CheckoutServices {
         String collection = service.equals("business") ? "businesses" : "customers";
         var state = await(client.get().uri(address(service) + "/api/" + collection + "/" + id)
                 .retrieve().bodyToMono(ServiceState.class), service);
-        if (!"ACTIVE".equals(state.status())) {
+        if (!"ACTIVE".equals(service.equals("customer") ? state.customerStatus() : state.status())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, service + " is not active");
         }
     }
@@ -59,7 +59,7 @@ public class CheckoutServices {
                 }).block();
     }
 
-    public record ServiceState(String status) {}
+    public record ServiceState(String status, String customerStatus) {}
     public record PaymentRequest(UUID orderId, UUID customerId, BigDecimal amount) {}
     public record PaymentResponse(UUID paymentId, UUID orderId, UUID customerId, BigDecimal amount, String status) {}
 }

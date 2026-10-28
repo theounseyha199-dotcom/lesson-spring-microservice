@@ -1,13 +1,30 @@
-plugins { id 'discovery-client-conventions' }
+plugins { id 'discovery-client-conventions'
+id 'spring-cloud-common-conventions'
+id 'spring-boot-common-conventions'}
+ext {
+    springCloudVersion = "2025.1.4"
+}
 dependencies {
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+    implementation 'org.springframework.cloud:spring-cloud-starter-consul-config'
     implementation project(':order-service-domain:order-application-service')
     implementation project(':order-service-restapi')
     implementation project(':order-service-persistence')
+    implementation project(':order-service-client')
+    implementation 'org.liquibase:liquibase-core'
 
+    implementation 'org.springframework.boot:spring-boot-starter-liquibase'
+    runtimeOnly 'org.postgresql:postgresql'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    }
 }

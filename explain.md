@@ -1,3 +1,5 @@
+> Historical learning notes: database and discovery examples below describe the previous implementation. Use [the current run guide](deployment/README.md) for MongoDB and Consul setup.
+
 បាន។ Project នេះគឺជា **Java / Spring Boot Microservice Starter** ដែលរៀបចំជា **Gradle composite build** ហើយបច្ចុប្បន្ន Feature ដែលបាន implement ពេញលេញជាងគេគឺ **Customer Management**។
 
 ខ្ញុំនឹងពន្យល់ពី flow និង architecture ឲ្យងាយយល់ ដោយទុក Technical terms សំខាន់ៗជា English។

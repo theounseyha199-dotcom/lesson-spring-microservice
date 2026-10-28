@@ -1,0 +1,7 @@
+plugins { id 'base' }
+
+// Include composite builds in the usual root lifecycle commands.
+['assemble', 'check', 'build', 'test'].each { taskName ->
+    def aggregate = tasks.findByName(taskName) ?: tasks.create(taskName)
+    aggregate.dependsOn gradle.includedBuilds.collect { it.task(":" + taskName) }
+}

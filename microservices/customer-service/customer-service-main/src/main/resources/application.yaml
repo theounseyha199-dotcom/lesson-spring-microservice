@@ -1,59 +1,85 @@
+
+# ==========================================
+# 1. SERVER CONFIGURATION
+# ==========================================
 server:
+  # Port សម្រាប់ដំណើរការ Customer Service
+  # Default Port: 8084
+  # អាច Override តាម Environment Variable
   port: ${CUSTOMER_PORT:8084}
 
+
+# ==========================================
+# 2. SPRING CONFIGURATION
+# ==========================================
 spring:
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      discovery:
+        service-name: customer-service
+        prefer-ip-address: true
+        health-check-path: /actuator/health
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        health-check-interval: 15s
+
   application:
     name: customer-service
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
-      - org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration
-      - org.springframework.boot.data.jpa.autoconfigure.DataJpaRepositoriesAutoConfiguration
+
   config:
+    # Load Environment Variables ពី .env.local
+    # optional: មិន Error ប្រសិនបើ File មិនមាន
+    # [.properties]: អាន File ជា Properties Format
+    # Path គិតចាប់ពី Working Directory
     import: optional:file:./microservices/customer-service/.env.local[.properties]
-  # Legacy PostgreSQL settings and schema.sql are retained for reference.
-  # datasource:
-  #   url: ${CUSTOMER_DB_URL:jdbc:postgresql://localhost:5432/istad_customer}
-  #   username: ${CUSTOMER_DB_USERNAME}
-  #   password: ${CUSTOMER_DB_PASSWORD}
-  # sql:
-  #   init:
-  #     mode: always
-  #     schema-locations: classpath:schema.sql
+
+  # ========================================
+  # 4. MONGODB DATABASE
+  # ========================================
   mongodb:
+    # MongoDB Connection URI
+    # Username: mongod
+    # Password: mongod
+    # Host: localhost
+    # Port: 2026
+    # Database: istad_customer
+    # authSource=admin: Authenticate ជាមួយ admin DB
+    #
+    # ប្រសិនបើ CUSTOMER_MONGO_URI មាន
+    # នោះ Spring នឹងប្រើ URI ពី Environment
     uri: ${CUSTOMER_MONGO_URI:mongodb://mongod:mongod@localhost:2026/istad_customer?authSource=admin}
 
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
-    healthcheck:
-      enabled: true
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
-    health-check-url-path: /actuator/health
-    status-page-url-path: /actuator/info
+
+# ==========================================
+# 6. SPRING BOOT ACTUATOR
+# ==========================================
 management:
   endpoints:
     web:
       exposure:
+        # Expose Health និង Info Endpoints
+        # /actuator/health
+        # /actuator/info
         include: health,info
+
+
+# ==========================================
+# 7. DISCOVERY DEMO PROFILE
+# ==========================================
+# --- បំបែក YAML ទៅជា Document ថ្មី
 ---
-# Use the same profile on the registry for the local failure demonstration.
 spring:
   config:
     activate:
+      # Configuration ខាងក្រោមដំណើរការ
+      # តែពេល Activate discovery-demo Profile
       on-profile: discovery-demo
+
   cloud:
     loadbalancer:
       cache:
+        # បិទ Spring Cloud LoadBalancer Cache
+        # កាត់បន្ថយការប្រើ Instance List ចាស់
+        # ពេលសាកល្បង Service Shutdown
         enabled: false
-eureka:
-  client:
-    registry-fetch-interval-seconds: 5
-    initial-instance-info-replication-interval-seconds: 5
-    instance-info-replication-interval-seconds: 5
-  instance:
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 15

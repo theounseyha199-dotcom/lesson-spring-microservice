@@ -47,14 +47,10 @@
                   <project path="$PROJECT_DIR$/microservices/customer-service/customer-service-restapi" />
                 </projects>
               </build>
-              <build path="$PROJECT_DIR$/microservices/discovery-server" name="discovery-server">
-                <projects>
-                  <project path="$PROJECT_DIR$/microservices/discovery-server" />
-                </projects>
-              </build>
               <build path="$PROJECT_DIR$/microservices/order-service" name="order-service">
                 <projects>
                   <project path="$PROJECT_DIR$/microservices/order-service" />
+                  <project path="$PROJECT_DIR$/microservices/order-service/order-service-client" />
                   <project path="$PROJECT_DIR$/microservices/order-service/order-service-domain" />
                   <project path="$PROJECT_DIR$/microservices/order-service/order-service-domain/order-application-service" />
                   <project path="$PROJECT_DIR$/microservices/order-service/order-service-domain/order-domain-core" />
@@ -83,6 +79,9 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/build-logic" />
             <option value="$PROJECT_DIR$/deployment" />
+            <option value="$PROJECT_DIR$/deployment/mongo" />
+            <option value="$PROJECT_DIR$/deployment/postgres" />
+            <option value="$PROJECT_DIR$/deployment/postgres/init_db" />
             <option value="$PROJECT_DIR$/istad-common" />
             <option value="$PROJECT_DIR$/istad-common/istad-common-domain" />
             <option value="$PROJECT_DIR$/istad-common/istad-common-restapi" />
@@ -102,8 +101,8 @@
             <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-message" />
             <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-persistence" />
             <option value="$PROJECT_DIR$/microservices/customer-service/customer-service-restapi" />
-            <option value="$PROJECT_DIR$/microservices/discovery-server" />
             <option value="$PROJECT_DIR$/microservices/order-service" />
+            <option value="$PROJECT_DIR$/microservices/order-service/order-service-client" />
             <option value="$PROJECT_DIR$/microservices/order-service/order-service-domain" />
             <option value="$PROJECT_DIR$/microservices/order-service/order-service-domain/order-application-service" />
             <option value="$PROJECT_DIR$/microservices/order-service/order-service-domain/order-domain-core" />

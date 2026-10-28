@@ -1,15 +1,10 @@
 package kh.edu.istad.platform.order.discovery;
 
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.context.annotation.Bean;
+import kh.edu.istad.platform.order.client.config.WebClientConfig;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.context.annotation.Import;
 
 @Configuration(proxyBeanMethods = false)
+@Import(WebClientConfig.class)
 public class DiscoveryClientConfiguration {
-    @Bean
-    @LoadBalanced
-    WebClient.Builder loadBalancedWebClientBuilder() {
-        return WebClient.builder();
-    }
 }

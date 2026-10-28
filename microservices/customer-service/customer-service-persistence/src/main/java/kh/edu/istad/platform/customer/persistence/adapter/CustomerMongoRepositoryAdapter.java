@@ -36,15 +36,23 @@ public class CustomerMongoRepositoryAdapter implements CustomerRepository {
     @Override
     public Optional<Customer> findById(CustomerId id) {
         return customerMongoRepository.findById(id.value().toString())
-                .map(document -> Customer.builder()
-                        .id(new CustomerId(UUID.fromString(document.customerId())))
-                        .username(document.username())
-                        .familyName(document.familyName())
-                        .givenName(document.givenName())
-                        .email(new Email(document.email()))
-                        .phoneNumber(new PhoneNumber(document.phoneNumber()))
-                        .status(document.status())
-                        .build())
+                .map(this::toDomain)
                 .blockOptional();
+    }
+    @Override
+    public java.util.List<Customer> findAll() {
+        return customerMongoRepository.findAll().map(this::toDomain).collectList().block();
+    }
+
+    private Customer toDomain(CustomerDocument document) {
+        return Customer.builder()
+                .id(new CustomerId(UUID.fromString(document.customerId())))
+                .username(document.username())
+                .familyName(document.familyName())
+                .givenName(document.givenName())
+                .email(new Email(document.email()))
+                .phoneNumber(new PhoneNumber(document.phoneNumber()))
+                .status(document.status())
+                .build();
     }
 }

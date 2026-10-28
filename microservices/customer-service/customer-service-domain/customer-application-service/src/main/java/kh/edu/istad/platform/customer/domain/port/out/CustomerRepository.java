@@ -6,6 +6,8 @@ import kh.edu.istad.platform.customer.domain.entity.Customer;
 import java.util.Optional;
 
 public interface CustomerRepository {
+    java.util.List<Customer> findAll();
+
     Customer save(Customer customer);
 
     Optional<Customer> findById(CustomerId id);

@@ -4,11 +4,8 @@ plugins {
 
 dependencies {
     api project(':customer-service-domain:customer-application-service')
-    // Legacy PostgreSQL/JPA implementation is kept in the commented source files.
-    // implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     testImplementation 'io.projectreactor:reactor-test'
-    // runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

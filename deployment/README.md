@@ -1,36 +1,27 @@
-# Microservices assignment: local run guide
+# Local run guide
 
-Assignment reports:
+All four services use MongoDB for persistence and Consul for discovery.
 
-- [Part 1: hard-coded REST communication, tests, and screenshots](../docs/part1-hardcoded-communication.md)
-- [Part 2: Eureka research](../docs/part2-eureka-research.md)
-- [Part 3: Eureka integration, screenshots, and comparison](../docs/part3-eureka-integration.md)
-- [Part 4: Eureka lifecycle, health tracking, and discovery patterns](../docs/part4-eureka-experiments.md)
-- [Eureka implementation, load balancing, and health monitoring](../docs/eureka-discovery.md)
+## Start infrastructure
 
-The order service uses Spring WebMVC, Spring Data JPA, and PostgreSQL, as required
-by the assignment. The business service uses Spring WebFlux and Reactive MongoDB.
-Payment registration uses WebMVC and MongoDB.
-
-## Start databases
-
-The Compose network is external. Create it once if it does not already exist:
+From the repository root:
 
 ```bash
-docker network create ite-net
-docker compose up -d postgres mongodb
+docker network create ite-net # once, if missing
+docker compose -f deployment/docker-compose.yaml up -d mongodb
+docker compose -f deployment/consul/docker-compose.yaml up -d
 ```
 
-When the applications run on the host, order connects to PostgreSQL on
-`localhost:5433`; business, payment, and customer connect to MongoDB on `localhost:2026`.
-Override the order connection with `ORDER_DB_URL`, `ORDER_DB_USERNAME`, and
-`ORDER_DB_PASSWORD`. Override MongoDB connections with `BUSINESS_MONGO_URI` or
-`PAYMENT_MONGO_URI` or `CUSTOMER_MONGO_URI`. Containers on `ite-net` should use `postgres:5432` and
-`mongodb:27017` instead of the host addresses.
+MongoDB defaults to localhost:2026. Override each service connection with
+`ORDER_MONGO_URI`, `CUSTOMER_MONGO_URI`, `BUSINESS_MONGO_URI`, or `PAYMENT_MONGO_URI`.
+Each service uses its own database. Existing SQL data is not migrated automatically.
+Consul defaults to localhost:8500 (`CONSUL_HOST` and `CONSUL_PORT`).
+See the [Consul guide](consul/README.md) for host/container networking.
 
 ## Build and run
 
-From the repository root:
+From the repository root, `./gradlew build` builds every service and runs all tests;
+`./gradlew test` runs all service tests. Individual builds are also supported:
 
 ```bash
 ./gradlew -p microservices/order-service test :order-service-main:bootJar
@@ -38,6 +29,8 @@ From the repository root:
 ./gradlew -p microservices/payment-service test :payment-service-main:bootJar
 ./gradlew -p microservices/customer-service test :customer-service-main:bootJar
 ```
+
+All four services register with Consul.
 
 Run each jar in its own terminal:
 

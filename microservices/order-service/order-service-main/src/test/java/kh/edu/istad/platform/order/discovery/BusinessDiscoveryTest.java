@@ -25,16 +25,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest(classes = BusinessDiscoveryTest.TestApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.NONE,
-        properties = {"eureka.client.enabled=false", "spring.cloud.loadbalancer.cache.enabled=false"})
+        properties = {"spring.cloud.consul.enabled=false", "spring.cloud.loadbalancer.cache.enabled=false"})
 class BusinessDiscoveryTest {
     static final HttpServer FIRST = instance("first");
     static final HttpServer SECOND = instance("second");
 
     @Configuration(proxyBeanMethods = false)
-    @EnableAutoConfiguration(excludeName = {
-            "org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration",
-            "org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration",
-            "org.springframework.boot.data.jpa.autoconfigure.DataJpaRepositoriesAutoConfiguration"})
+    @EnableAutoConfiguration
     @Import({DiscoveryClientConfiguration.class, BusinessDiscoveryController.class})
     static class TestApplication { }
 
