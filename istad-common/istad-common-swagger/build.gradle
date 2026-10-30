@@ -1,0 +1,17 @@
+plugins {
+    id 'spring-common-conventions'
+
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api libs.springdoc.openapi.starter.webmvc.ui
+}
+
+test {
+    useJUnitPlatform()
+}

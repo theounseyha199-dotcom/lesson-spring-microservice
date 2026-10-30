@@ -6,12 +6,14 @@ ext {
 }
 dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation libs.spring.boot.starter.data.r2dbc
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation libs.istad.common.swagger
     implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
     implementation 'org.springframework.cloud:spring-cloud-starter-consul-config'
-    implementation project(':order-service-domain:order-application-service')
+    implementation libs.order.application.service
     implementation project(':order-service-restapi')
     implementation project(':order-service-persistence')
     implementation project(':order-service-client')

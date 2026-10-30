@@ -7,3 +7,13 @@ plugins { id 'java-common-conventions' }
         project.tasks.matching { it.name == taskName }
     }
 }
+
+// Resolve catalog coordinates to the modules in this build.
+allprojects {
+    configurations.configureEach {
+        resolutionStrategy.dependencySubstitution {
+            substitute module('kh.edu.istad:order-application-service') using project(':order-service-domain:order-application-service')
+            substitute module('kh.edu.istad:order-domain-core') using project(':order-service-domain:order-domain-core')
+        }
+    }
+}

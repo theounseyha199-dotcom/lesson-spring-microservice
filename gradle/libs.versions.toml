@@ -1,0 +1,22 @@
+[versions]
+java-version = "25"
+spring-boot = "4.1.1"
+spring-dependency-management = "1.1.7"
+springdoc-openapi = "3.2.0"
+
+[libraries]
+spring-boot-gradle-plugin = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "spring-boot" }
+spring-dependency-management-plugin = { module = "io.spring.gradle:dependency-management-plugin", version.ref = "spring-dependency-management" }
+spring-boot-starter-data-r2dbc = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc" }
+springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc-openapi" }
+
+# ORDER SERVICE
+istad-common-swagger = { module = "kh.edu.istad:istad-common-swagger" }
+order-application-service = { module = "kh.edu.istad:order-application-service" }
+order-domain-core = { module = "kh.edu.istad:order-domain-core" }
+
+[bundles]
+gradle-dependency-management = [
+    "spring-boot-gradle-plugin",
+    "spring-dependency-management-plugin"
+]
