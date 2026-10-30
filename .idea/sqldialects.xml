@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/microservices/order-service/order-service-main/src/main/resources/db/changelog/ddl/changelog-0001.sql" dialect="GenericSQL" />
+  </component>
+</project>
