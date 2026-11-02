@@ -1,6 +1,7 @@
 package kh.edu.istad.platform.order.client.adapter;
 
 import org.junit.jupiter.api.Test;
+import kh.edu.istad.platform.order.client.config.ClientConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,10 +25,10 @@ class CustomerServiceClientAdapterTest {
                     .body("{\"customerId\":\"" + id + "\",\"username\":\"test\",\"customerStatus\":\"ACTIVE\"}")
                     .build());
         });
-        var result = new CustomerServiceClientAdapter(builder).findById(id).block();
-        assertEquals(id, result.customerId());
-        assertEquals("test", result.username());
-        assertEquals("ACTIVE", result.customerStatus());
+        var result = new CustomerServiceClientAdapter(new ClientConfig(builder).register()).findById(id).block();
+        assertEquals(id, result.getCustomerId());
+        assertEquals("test", result.getUsername());
+        assertEquals("ACTIVE", result.getCustomerStatus());
         assertEquals("http://customer-service/api/customers/" + id, uri.get());
         builder.build().get().uri("/probe").retrieve().toBodilessEntity().block();
         assertEquals("http://original/probe", uri.get());
@@ -41,7 +42,7 @@ class CustomerServiceClientAdapterTest {
                 return Mono.just(ClientResponse.create(HttpStatus.OK)
                         .header("Content-Type", "application/json").body(body).build());
             });
-            var result = new CustomerServiceClientAdapter(builder).findAll().block();
+            var result = new CustomerServiceClientAdapter(new ClientConfig(builder).register()).findAll().block();
             assertEquals(body.equals("[]") ? 0 : 1, result.size());
         }
     }
@@ -51,7 +52,7 @@ class CustomerServiceClientAdapterTest {
         var builder = WebClient.builder().exchangeFunction(request ->
                 Mono.just(ClientResponse.create(HttpStatus.NOT_FOUND).build()));
         assertThrows(WebClientResponseException.NotFound.class,
-                () -> new CustomerServiceClientAdapter(builder).findById(UUID.randomUUID()).block());
+                () -> new CustomerServiceClientAdapter(new ClientConfig(builder).register()).findById(UUID.randomUUID()).block());
     }
 
     @Test
@@ -59,6 +60,6 @@ class CustomerServiceClientAdapterTest {
         var builder = WebClient.builder().exchangeFunction(request ->
                 Mono.just(ClientResponse.create(HttpStatus.NO_CONTENT).build()));
         assertThrows(IllegalStateException.class,
-                () -> new CustomerServiceClientAdapter(builder).findById(UUID.randomUUID()).block());
+                () -> new CustomerServiceClientAdapter(new ClientConfig(builder).register()).findById(UUID.randomUUID()).block());
     }
 }

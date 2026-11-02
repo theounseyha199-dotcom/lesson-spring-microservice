@@ -6,8 +6,10 @@ ext {
 }
 dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation libs.spring.boot.starter.data.r2dbc
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation libs.spring.boot.starter.data.r2dbc
+
+
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation libs.istad.common.swagger

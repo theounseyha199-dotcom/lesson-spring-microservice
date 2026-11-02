@@ -1,6 +1,7 @@
 package kh.edu.istad.platform.order.discovery;
 
 import kh.edu.istad.platform.order.client.adapter.CustomerServiceClientAdapter;
+import kh.edu.istad.platform.order.client.dto.QueryCustomerResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,13 +23,13 @@ public class CustomerDiscoveryController {
     }
 
     @GetMapping
-    public Mono<java.util.List<CustomerServiceClientAdapter.CustomerSummary>> list() {
+    public Mono<java.util.List<QueryCustomerResult>> list() {
         return client.findAll().onErrorMap(error -> new ResponseStatusException(
                 HttpStatus.SERVICE_UNAVAILABLE, "Customer service unavailable", error));
     }
 
     @GetMapping("/{id}")
-    public Mono<CustomerServiceClientAdapter.CustomerSummary> find(@PathVariable("id") UUID id) {
+    public Mono<QueryCustomerResult> find(@PathVariable("id") UUID id) {
         return client.findById(id)
                 .onErrorMap(error -> {
                     if (error instanceof WebClientResponseException.NotFound) {

@@ -1,35 +1,32 @@
 package kh.edu.istad.platform.order.client.adapter;
 
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import kh.edu.istad.platform.order.client.dto.QueryCustomerResult;
+import kh.edu.istad.platform.order.client.httpclient.CustomerHttpClient;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class CustomerServiceClientAdapter {
-    private final WebClient client;
+    private final CustomerHttpClient customerHttpClient;
 
-    public CustomerServiceClientAdapter(@LoadBalanced WebClient.Builder builder) {
-        this.client = builder.clone().baseUrl("http://customer-service").build();
+    public Flux<QueryCustomerResult> getAllCustomers() {
+        return customerHttpClient.getAllCustomers().timeout(Duration.ofSeconds(3));
     }
 
-    public Mono<java.util.List<CustomerSummary>> findAll() {
-        return client.get().uri("/api/customers")
-                .retrieve().bodyToFlux(CustomerSummary.class).collectList()
-                .timeout(Duration.ofSeconds(3));
+    public Mono<List<QueryCustomerResult>> findAll() {
+        return getAllCustomers().collectList().timeout(Duration.ofSeconds(3));
     }
 
-    public Mono<CustomerSummary> findById(UUID id) {
-        return client.get().uri("/api/customers/{id}", id)
-                .retrieve().bodyToMono(CustomerSummary.class)
+    public Mono<QueryCustomerResult> findById(UUID id) {
+        return customerHttpClient.getCustomerById(id)
                 .switchIfEmpty(Mono.error(new IllegalStateException("Empty customer response")))
                 .timeout(Duration.ofSeconds(3));
     }
-
-    public record CustomerSummary(UUID customerId, String username, String familyName,
-                                  String givenName, String email, String phoneNumber,
-                                  String customerStatus, String customerSegmentType) {}
 }
