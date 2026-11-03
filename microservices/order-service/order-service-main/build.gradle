@@ -5,6 +5,7 @@ ext {
     springCloudVersion = "2025.1.4"
 }
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation libs.spring.boot.starter.data.r2dbc

@@ -1,5 +1,6 @@
 package kh.edu.istad.platform.order.client.adapter;
 
+import kh.edu.istad.platform.order.client.dto.PostCustomer;
 import kh.edu.istad.platform.order.client.dto.QueryCustomerResult;
 import kh.edu.istad.platform.order.client.httpclient.CustomerHttpClient;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,12 @@ public class CustomerServiceClientAdapter {
 
     public Mono<QueryCustomerResult> findById(UUID id) {
         return customerHttpClient.getCustomerById(id)
+                .switchIfEmpty(Mono.error(new IllegalStateException("Empty customer response")))
+                .timeout(Duration.ofSeconds(3));
+    }
+
+    public Mono<QueryCustomerResult> createCustomer(PostCustomer customer) {
+        return customerHttpClient.createCustomer(customer)
                 .switchIfEmpty(Mono.error(new IllegalStateException("Empty customer response")))
                 .timeout(Duration.ofSeconds(3));
     }

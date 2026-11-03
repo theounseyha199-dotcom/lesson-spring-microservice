@@ -25,7 +25,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest(classes = BusinessDiscoveryTest.TestApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.NONE,
-        properties = {"spring.cloud.consul.enabled=false", "spring.cloud.loadbalancer.cache.enabled=false"})
+        properties = {"spring.liquibase.enabled=false", "spring.cloud.consul.config.enabled=false",
+                "spring.cloud.consul.enabled=false", "spring.cloud.loadbalancer.cache.enabled=false"})
 class BusinessDiscoveryTest {
     static final HttpServer FIRST = instance("first");
     static final HttpServer SECOND = instance("second");

@@ -1,9 +1,16 @@
-#server:
-#  port: 8081
+server:
+  port: 9092
 
 spring:
   application:
     name: order-service
+
+  http:
+    serviceclient:
+      customer-service:
+        base-url: lb://customer-service
+      payment:
+        base-url: lb://payment-service
 
   profiles:
     active: dev
@@ -17,7 +24,7 @@ spring:
     username: iteuser
     password: qwerqwer
 
-  # Liquibase - temporarily disabled
+  # Liquibase migrations for the reactive SQL repositories
   liquibase:
     enabled: true
     url: jdbc:postgresql://localhost:9543/db_order
@@ -53,7 +60,16 @@ spring:
         enabled: true
         register: true
         service-name: order-service
+        prefer-ip-address: true
         health-check-path: /actuator/health
+
+service:
+  message: Local development
+  env: dev
+  version: 1.0.0
+  base-url: http://localhost:8081
+global:
+  version: 1.0.0
 
 management:
   endpoints:
@@ -71,3 +87,40 @@ spring:
     loadbalancer:
       cache:
         enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: hardcoded-demo
+  http:
+    serviceclient:
+      payment:
+        base-url: http://localhost:8083
+
+---
+spring:
+  config:
+    activate:
+      on-profile: oauth2
+  security:
+    oauth2:
+      client:
+        registration:
+          order-service:
+            provider: auth-server
+            client-id: postman-client
+            client-secret: dev-secret-change-me
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: client_credentials
+            scope: api.read,api.write
+          payment-client:
+            provider: auth-server
+            client-id: postman-client
+            client-secret: dev-secret-change-me
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: client_credentials
+            scope: api.read,api.write
+        provider:
+          auth-server:
+            token-uri: http://localhost:9000/oauth2/token

@@ -51,3 +51,8 @@ microservices/customer-service/run-local.sh
 docs/screenshots/part3/*.log
 docs/screenshots/part4/*.log
 docs/screenshots/checkout/*.log
+
+# Local environment files
+**/.env
+**/.env.*
+!**/.env.example

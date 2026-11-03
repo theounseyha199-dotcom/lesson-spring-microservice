@@ -1,6 +1,7 @@
 package kh.edu.istad.platform.order.discovery;
 
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +17,9 @@ import java.util.Map;
 public class BusinessDiscoveryController {
     private final WebClient businessClient;
 
-    public BusinessDiscoveryController(@LoadBalanced WebClient.Builder builder) {
-        this.businessClient = builder.clone().baseUrl("http://business-service").build();
+    public BusinessDiscoveryController(@Qualifier("serviceWebClient") WebClient.Builder builder,
+            @Value("${services.business-url:http://business-service}") String baseUrl) {
+        this.businessClient = builder.clone().baseUrl(baseUrl).build();
     }
 
     @GetMapping("/api/discovery/business")

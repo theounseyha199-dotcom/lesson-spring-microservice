@@ -1,6 +1,7 @@
 package kh.edu.istad.platform.order.checkout;
 
 import jakarta.validation.Valid;
+import kh.edu.istad.platform.order.client.dto.PaymentResponse;
 import kh.edu.istad.platform.order.domain.usecase.CreateOrderUseCase;
 import kh.edu.istad.platform.order.restapi.dto.CreateOrderRequest;
 import kh.edu.istad.platform.order.restapi.dto.OrderResponse;
@@ -39,6 +40,6 @@ public class CheckoutController {
         }
     }
 
-    public record CheckoutResponse(OrderResponse order, CheckoutServices.PaymentResponse payment,
+    public record CheckoutResponse(OrderResponse order, PaymentResponse payment,
                                    String outcome) {}
 }

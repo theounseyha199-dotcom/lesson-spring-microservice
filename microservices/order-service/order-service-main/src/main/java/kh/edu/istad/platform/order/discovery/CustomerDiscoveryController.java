@@ -1,12 +1,10 @@
 package kh.edu.istad.platform.order.discovery;
 
 import kh.edu.istad.platform.order.client.adapter.CustomerServiceClientAdapter;
+import kh.edu.istad.platform.order.client.dto.PostCustomer;
 import kh.edu.istad.platform.order.client.dto.QueryCustomerResult;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
@@ -38,5 +36,12 @@ public class CustomerDiscoveryController {
                     return new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
                             "Customer service unavailable", error);
                 });
+    }
+
+    @PostMapping
+    public Mono<QueryCustomerResult> create(@RequestBody PostCustomer customer) {
+        return client.createCustomer(customer)
+                .onErrorMap(error -> new ResponseStatusException(
+                        HttpStatus.SERVICE_UNAVAILABLE, "Customer service unavailable", error));
     }
 }

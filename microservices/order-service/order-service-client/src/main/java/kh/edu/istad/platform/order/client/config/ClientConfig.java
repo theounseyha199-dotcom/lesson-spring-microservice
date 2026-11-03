@@ -1,45 +1,54 @@
 package kh.edu.istad.platform.order.client.config;
 
-
-import kh.edu.istad.platform.order.client.httpclient.BusinessHttpClient;
+import kh.edu.istad.platform.order.client.exception.DownStreamServiceException;
 import kh.edu.istad.platform.order.client.httpclient.CustomerHttpClient;
-import lombok.RequiredArgsConstructor;
+import kh.edu.istad.platform.order.client.httpclient.PaymentClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.support.WebClientAdapter;
-import org.springframework.web.service.annotation.GetExchange;
-import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
+import org.springframework.web.client.support.RestClientHttpServiceGroupConfigurer;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import reactor.netty.http.client.HttpClient;
+import io.netty.channel.ChannelOption;
+import java.time.Duration;
+import org.springframework.web.reactive.function.client.support.WebClientHttpServiceGroupConfigurer;
+import org.springframework.web.service.registry.HttpServiceGroup;
+import org.springframework.web.service.registry.ImportHttpServices;
 
-import java.util.UUID;
-
-@RequiredArgsConstructor
-@Configuration
+@Configuration(proxyBeanMethods = false)
+@ImportHttpServices(group = "customer-service", types = CustomerHttpClient.class,
+        clientType = HttpServiceGroup.ClientType.WEB_CLIENT)
+@ImportHttpServices(group = "payment", types = PaymentClient.class,
+        clientType = HttpServiceGroup.ClientType.REST_CLIENT)
 public class ClientConfig {
-    private final WebClient.Builder webClient;
+    @Bean
+    public RestClientHttpServiceGroupConfigurer paymentTransportConfigurer() {
+        var http = java.net.http.HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(2)).build();
+        var factory = new JdkClientHttpRequestFactory(http);
+        factory.setReadTimeout(Duration.ofSeconds(3));
+        return groups -> groups.filterByName("payment")
+                .forEachClient((group, builder) -> builder.requestFactory(factory));
+    }
 
     @Bean
-    public CustomerHttpClient register(){
-
-
-        return createClient(CustomerHttpClient.class, "http://customer-service");
+    public WebClientHttpServiceGroupConfigurer httpServiceTransportConfigurer() {
+        // Do not retry payment writes automatically after a connection failure.
+        var http = HttpClient.create().disableRetry(true)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 2000)
+                .responseTimeout(Duration.ofSeconds(3));
+        return groups -> groups.forEachClient((group, builder) -> builder
+                .clientConnector(new ReactorClientHttpConnector(http)));
     }
 
-    @GetExchange
-    public BusinessHttpClient get(UUID id) {
-        return createClient(BusinessHttpClient.class, "http://business-service");
-    }
-
-
-    private <T> T createClient(Class<T> type, String baseUrl) {
-        WebClient webClientInstance = webClient.clone()
-                .baseUrl(baseUrl)
-                .build();
-
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClientInstance))
-                .build();
-
-        return factory.createClient(type);
+    @Bean
+    public WebClientHttpServiceGroupConfigurer webClientHttpServiceGroupConfigurer() {
+        return groups -> groups.filterByName("customer-service")
+                .forEachClient((group, builder) -> builder
+                        .defaultHeader("User-Agent", "Web Client")
+                        .defaultStatusHandler(HttpStatusCode::is5xxServerError,
+                                response -> response.createException().map(
+                                        error -> new DownStreamServiceException("customer-service", error))));
     }
 }

@@ -1,7 +1,7 @@
 package kh.edu.istad.platform.order.checkout;
 
 import kh.edu.istad.platform.order.restapi.dto.OrderResponse;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,9 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
+import kh.edu.istad.platform.order.client.dto.PaymentRequest;
+import kh.edu.istad.platform.order.client.dto.PaymentResponse;
+import kh.edu.istad.platform.order.client.httpclient.PaymentClient;
 import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
@@ -19,18 +21,24 @@ import java.util.UUID;
 @Component
 public class CheckoutServices {
     private final WebClient client;
+    private final PaymentClient paymentClient;
     private final boolean hardcoded;
+    private final Map<String, String> addresses;
     private static final Map<String, String> BASELINE = Map.of(
-            "customer", "http://localhost:8084", "business", "http://localhost:8082",
-            "payment", "http://localhost:8083");
+            "customer", "http://localhost:8084", "business", "http://localhost:8082");
 
-    public CheckoutServices(@LoadBalanced WebClient.Builder builder, Environment environment) {
+    public CheckoutServices(@Qualifier("serviceWebClient") WebClient.Builder builder, Environment environment,
+                            PaymentClient paymentClient) {
+        this.paymentClient = paymentClient;
         hardcoded = environment.acceptsProfiles(Profiles.of("hardcoded-demo"));
+        addresses = Map.of(
+                "customer", environment.getProperty("services.customer-url", "http://customer-service"),
+                "business", environment.getProperty("services.business-url", "http://business-service"));
         client = (hardcoded ? WebClient.builder() : builder.clone()).build();
     }
 
     private String address(String service) {
-        return hardcoded ? BASELINE.get(service) : "http://" + service + "-service";
+        return hardcoded ? BASELINE.get(service) : addresses.get(service);
     }
 
     public void requireActive(String service, UUID id) {
@@ -43,9 +51,18 @@ public class CheckoutServices {
     }
 
     public PaymentResponse registerPayment(OrderResponse order) {
-        return await(client.post().uri(address("payment") + "/api/payments")
-                .bodyValue(new PaymentRequest(order.orderId(), order.customerId(), order.total()))
-                .retrieve().bodyToMono(PaymentResponse.class), "payment");
+        try {
+            var response = paymentClient.createPayment(
+                    new PaymentRequest(order.orderId(), order.customerId(), order.total()));
+            if (response == null) {
+                throw new IllegalStateException("Empty payment response");
+            }
+            return response;
+        } catch (org.springframework.web.client.HttpClientErrorException.NotFound error) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "payment record not found", error);
+        } catch (RuntimeException error) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "payment unavailable", error);
+        }
     }
 
     private <T> T await(Mono<T> call, String service) {
@@ -60,6 +77,4 @@ public class CheckoutServices {
     }
 
     public record ServiceState(String status, String customerStatus) {}
-    public record PaymentRequest(UUID orderId, UUID customerId, BigDecimal amount) {}
-    public record PaymentResponse(UUID paymentId, UUID orderId, UUID customerId, BigDecimal amount, String status) {}
 }
