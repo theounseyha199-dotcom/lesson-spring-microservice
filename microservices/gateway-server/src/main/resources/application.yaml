@@ -35,6 +35,11 @@ spring:
                - Path=/jph/**
               filters:
                - RewritePath=/jph/?(?<segment>.*), /$\{segment}
+            - id: frontend-service
+              uri: ${FRONTEND_URL:http://localhost:3000}
+              order: 1000
+              predicates:
+                - Path=/**
 
   profiles:
     active: dev
