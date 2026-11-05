@@ -1,0 +1,1179 @@
+{
+  "info": {
+    "name": "Service OAuth Test - Full Local API (Ready to Import)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Import the accompanying Local environment and select it. Set order_client_secret to the auth server ORDER_CLIENT_SECRET. Run both token requests, create a customer and business, then test orders. Tokens and created IDs are saved automatically. Folder 08 is manual only. Order POST/PUT endpoints currently have CSRF enabled and may return 403 even with a valid bearer token; this collection does not change server security. Collection defaults are included; select No environment to avoid stale overrides. Set order_client_secret in collection Variables. Token and ID scripts save collection variables."
+  },
+  "item": [
+    {
+      "name": "01 - OAuth tokens and metadata",
+      "description": "",
+      "item": [
+        {
+          "name": "OpenID discovery",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{auth_url}}/.well-known/openid-configuration",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "OAuth metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{auth_url}}/.well-known/oauth-authorization-server",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Signing public keys",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{auth_url}}/oauth2/jwks",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get order API token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{auth_url}}/oauth2/token",
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "{{client_id}}",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "{{client_secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials",
+                  "type": "text"
+                },
+                {
+                  "key": "scope",
+                  "value": "api.read api.write",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Token issued\", () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) { const data = pm.response.json(); pm.test(\"Access token present\", () => pm.expect(data.access_token).to.be.a(\"string\").and.not.empty); pm.collectionVariables.set(\"access_token\", data.access_token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get direct customer API token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{auth_url}}/oauth2/token",
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "{{order_client_id}}",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "{{order_client_secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials",
+                  "type": "text"
+                },
+                {
+                  "key": "scope",
+                  "value": "customer.read customer.write",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Token issued\", () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) { const data = pm.response.json(); pm.test(\"Access token present\", () => pm.expect(data.access_token).to.be.a(\"string\").and.not.empty); pm.collectionVariables.set(\"customer_access_token\", data.access_token); }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Service health",
+      "description": "",
+      "item": [
+        {
+          "name": "Order health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{order_url}}/actuator/health",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Customer health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customer_url}}/actuator/health",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Business health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{business_url}}/actuator/health",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Payment health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{payment_url}}/actuator/health",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Gateway health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gateway_url}}/actuator/health",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Customers (direct)",
+      "description": "",
+      "item": [
+        {
+          "name": "Create customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{customer_url}}/api/customers",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"postman-{{$timestamp}}\",\n  \"familyName\": \"Test\",\n  \"givenName\": \"Customer\",\n  \"email\": \"postman-{{$timestamp}}@example.com\",\n  \"phoneNumber\": \"012345678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([201]));",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { const data = pm.response.json(); const value = data.customerId; if (value) pm.collectionVariables.set(\"customer_id\", value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customer_url}}/api/customers",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Find customer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customer_url}}/api/customers/{{customer_id}}",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update customer name",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{customer_url}}/api/customers/{{customer_id}}",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"familyName\": \"Updated\",\n  \"givenName\": \"Customer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - Businesses",
+      "description": "",
+      "item": [
+        {
+          "name": "Create business",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{business_url}}/api/businesses",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Shop\",\n  \"email\": \"shop-{{$timestamp}}@example.com\",\n  \"address\": \"Phnom Penh\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([201]));",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { const data = pm.response.json(); const value = data.businessId; if (value) pm.collectionVariables.set(\"business_id\", value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Find business",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{business_url}}/api/businesses/{{business_id}}",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Business instance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{business_url}}/api/businesses/instance",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Business demo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{business_url}}/api/businesses/demo",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - Orders and checkout",
+      "description": "",
+      "item": [
+        {
+          "name": "Create order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{order_url}}/api/orders",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customer_id}}\",\n  \"businessId\": \"{{business_id}}\",\n  \"deliveryAddress\": \"Phnom Penh, Cambodia\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 2,\n      \"unitPrice\": 5.5\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([201]));",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { const data = pm.response.json(); const value = data.orderId; if (value) pm.collectionVariables.set(\"order_id\", value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Checkout (creates another order and payment)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{order_url}}/api/checkout",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customer_id}}\",\n  \"businessId\": \"{{business_id}}\",\n  \"deliveryAddress\": \"Phnom Penh, Cambodia\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 2,\n      \"unitPrice\": 5.5\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([201, 202]));",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { const data = pm.response.json(); const value = data.order && data.order.orderId; if (value) pm.collectionVariables.set(\"order_id\", value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List customers through order service",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{order_url}}/api/discovery/customers",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Find customer through order service",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{order_url}}/api/discovery/customers/{{customer_id}}",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create customer through order service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{order_url}}/api/discovery/customers",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"postman-{{$timestamp}}\",\n  \"familyName\": \"Test\",\n  \"givenName\": \"Customer\",\n  \"email\": \"postman-{{$timestamp}}@example.com\",\n  \"phoneNumber\": \"012345678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200, 201]));",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { const data = pm.response.json(); const value = data.customerId; if (value) pm.collectionVariables.set(\"customer_id\", value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Discover business",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{order_url}}/api/discovery/business",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Webflux demo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{order_url}}/api/webflux",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consul config demo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{order_url}}/api/webflux/consul/config",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - Payments",
+      "description": "",
+      "item": [
+        {
+          "name": "Create payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{payment_url}}/api/payments",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{order_id}}\",\n  \"customerId\": \"{{customer_id}}\",\n  \"amount\": 11\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([201]));",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { const data = pm.response.json(); const value = data.paymentId; if (value) pm.collectionVariables.set(\"payment_id\", value); }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 - Gateway",
+      "description": "",
+      "item": [
+        {
+          "name": "Order customer proxy",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gateway_url}}/my-orders/api/discovery/customers",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Customer service discovery route",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gateway_url}}/customer-service/api/customers",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Business service discovery route",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gateway_url}}/business-service/api/businesses/{{business_id}}",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create order via gateway",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gateway_url}}/my-orders/api/orders",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customer_id}}\",\n  \"businessId\": \"{{business_id}}\",\n  \"deliveryAddress\": \"Phnom Penh, Cambodia\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 2,\n      \"unitPrice\": 5.5\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([201]));",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) { const data = pm.response.json(); const value = data.orderId; if (value) pm.collectionVariables.set(\"order_id\", value); }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08 - Manual negative and lifecycle checks",
+      "description": "Run individually. Deactivation changes customer state.",
+      "item": [
+        {
+          "name": "Customer without token (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customer_url}}/api/customers",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([401]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Customer with order API token (401 or 403)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customer_url}}/api/customers",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([401, 403]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Deactivate customer (run last)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{customer_url}}/api/customers/{{customer_id}}/deactivate",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected status\", () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "auth_url",
+      "value": "http://localhost:9000",
+      "type": "string"
+    },
+    {
+      "key": "order_url",
+      "value": "http://localhost:9092",
+      "type": "string"
+    },
+    {
+      "key": "customer_url",
+      "value": "http://localhost:8084",
+      "type": "string"
+    },
+    {
+      "key": "business_url",
+      "value": "http://localhost:8082",
+      "type": "string"
+    },
+    {
+      "key": "payment_url",
+      "value": "http://localhost:8083",
+      "type": "string"
+    },
+    {
+      "key": "gateway_url",
+      "value": "http://localhost:9999",
+      "type": "string"
+    },
+    {
+      "key": "client_id",
+      "value": "postman-client",
+      "type": "string"
+    },
+    {
+      "key": "client_secret",
+      "value": "dev-secret-change-me",
+      "type": "string"
+    },
+    {
+      "key": "order_client_id",
+      "value": "order-service",
+      "type": "string"
+    },
+    {
+      "key": "order_client_secret",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "business_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "order_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "payment_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_id",
+      "value": "8d8561d5-d753-4725-9d9c-50305e15b8ac",
+      "type": "string"
+    }
+  ]
+}
