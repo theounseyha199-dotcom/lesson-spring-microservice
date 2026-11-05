@@ -1,8 +1,10 @@
 package kh.edu.istad.platform.customer.restapi.controller;
 
+import kh.edu.istad.common.domain.Exception.DomainException;
 import kh.edu.istad.platform.customer.domain.dto.InitiateCustomerResult;
 import kh.edu.istad.platform.customer.domain.dto.UpdateCustomerCommand;
 import kh.edu.istad.platform.customer.domain.dto.UpdateCustomerResult;
+import kh.edu.istad.platform.customer.domain.entity.Customer;
 import kh.edu.istad.platform.customer.domain.event.CustomerDeactivatedEvent;
 import kh.edu.istad.platform.customer.domain.exception.CustomerDomainException;
 import kh.edu.istad.platform.customer.domain.exception.CustomerNotFoundException;
@@ -18,7 +20,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
+
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -30,6 +35,32 @@ public class CustomerController {
     private final UpdateCustomerUseCase updateCustomerUseCase;
     private final DeactivateCustomerUseCase deactivateCustomerUseCase;
     private final CustomerWebMapper customerWebMapper;
+    private final kh.edu.istad.platform.customer.domain.port.out.CustomerRepository repository;
+
+    @GetMapping
+    public List<CustomerSummary> list() {
+        return repository.findAll().stream()
+                .map(this::toSummary)
+                .toList();
+    }
+
+    @GetMapping("/{customerId}")
+    public CustomerSummary find(@PathVariable("customerId") UUID customerId) {
+        var customer = repository.findById(new kh.edu.istad.common.domain.valueobject.CustomerId(customerId))
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND));
+        return toSummary(customer);
+    }
+
+    public record CustomerSummary(UUID customerId, String username, String familyName,
+                                  String givenName, String email, String phoneNumber,
+                                  String customerStatus, String customerSegmentType) {}
+
+    private CustomerSummary toSummary(kh.edu.istad.platform.customer.domain.entity.Customer customer) {
+        return new CustomerSummary(customer.getId().value(), customer.getUsername(),
+                customer.getFamilyName(), customer.getGivenName(), customer.getEmail().value(),
+                customer.getPhoneNumber().value(), customer.getStatus().name(), null);
+    }
+
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -69,6 +100,11 @@ public class CustomerController {
             @PathVariable("customerId") UUID customerId
     ) {
         return deactivateCustomerUseCase.execute(customerId);
+    }
+
+    @GetMapping("/flux")
+    public Flux<Customer> getAllCustomers() {
+        throw new DomainException("An error occurred while retrieving customers.");
     }
 
 }

@@ -1,0 +1,135 @@
+server:
+  port: 9092
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH_ISSUER:http://localhost:9000}
+          audiences: order-service
+  application:
+    name: order-service
+
+  http:
+    serviceclient:
+      customer-service:
+        base-url: lb://customer-service
+      payment:
+        base-url: lb://payment-service
+
+  profiles:
+    active: dev,oauth2
+
+  config:
+    import:
+      - "optional:consul:"
+      - optional:file:./.local/runtime.properties
+      - optional:file:../../.local/runtime.properties
+
+  # PostgreSQL - Reactive
+  r2dbc:
+    url: r2dbc:postgresql://localhost:9543/db_order
+    username: iteuser
+    password: qwerqwer
+
+  # Liquibase migrations for the reactive SQL repositories
+  liquibase:
+    enabled: true
+    url: jdbc:postgresql://localhost:9543/db_order
+    user: iteuser
+    password: qwerqwer
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  # MongoDB
+  mongodb:
+    uri: mongodb://mongod:mongod@localhost:2026/istad_order?authSource=admin
+    representation:
+      uuid: standard
+
+  cloud:
+    discovery:
+      enabled: true
+
+    consul:
+      host: localhost
+      port: 8500
+
+      config:
+        enabled: true
+        prefix: config
+        format: YAML
+        data-key: data
+        watch:
+          enabled: true
+          # Complete blocking queries before the HTTP client's 10-second timeout.
+          wait-time: 5
+
+      discovery:
+        enabled: true
+        register: true
+        service-name: order-service
+        prefer-ip-address: true
+        health-check-path: /actuator/health
+
+service:
+  message: Local development
+  env: dev
+  version: 1.0.0
+  base-url: http://localhost:8081
+global:
+  version: 1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+---
+spring:
+  config:
+    activate:
+      on-profile: discovery-demo
+
+  cloud:
+    loadbalancer:
+      cache:
+        enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: hardcoded-demo
+  http:
+    serviceclient:
+      payment:
+        base-url: http://localhost:8083
+
+---
+spring:
+  config:
+    activate:
+      on-profile: oauth2
+  security:
+    oauth2:
+      client:
+        registration:
+          order-service:
+            provider: auth-server
+            client-id: order-service
+            client-secret: ${ORDER_CLIENT_SECRET}
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: client_credentials
+            scope: customer.read,customer.write
+          payment-client:
+            provider: auth-server
+            client-id: postman-client
+            client-secret: dev-secret-change-me
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: client_credentials
+            scope: api.read,api.write
+        provider:
+          auth-server:
+            token-uri: ${AUTH_TOKEN_URI:http://localhost:9000/oauth2/token}

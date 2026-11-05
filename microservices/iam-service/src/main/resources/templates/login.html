@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign in · ISTAD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <script defer th:src="@{/js/login.js}"></script>
+</head>
+<body>
+<main class="login-shell">
+    <!-- Animated background shapes -->
+    <div class="bg-shapes" aria-hidden="true">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+
+    <aside class="identity" aria-label="ISTAD account">
+        <a class="brand" th:href="@{/login}" aria-label="ISTAD sign in">
+            <span class="brand-mark" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <path d="M14 2L26 8V20L14 26L2 20V8L14 2Z" fill="currentColor" opacity="0.9"/>
+                    <path d="M14 6L22 10V18L14 22L6 18V10L14 6Z" fill="white" opacity="0.3"/>
+                </svg>
+            </span>
+            ISTAD
+        </a>
+        <div class="identity-copy">
+            <p class="eyebrow">YOUR ISTAD ACCOUNT</p>
+            <h1>One account.<br>Endless<br><em>possibilities.</em></h1>
+            <p class="tagline">A single place to sign in and access all your ISTAD services securely.</p>
+        </div>
+        <div class="identity-stats" aria-hidden="true">
+            <div class="stat">
+                <span class="stat-number">10+</span>
+                <span class="stat-label">Services</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">99.9%</span>
+                <span class="stat-label">Uptime</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">256</span>
+                <span class="stat-label">bit Encryption</span>
+            </div>
+        </div>
+        <p class="identity-footer">
+            <span class="footer-dot" aria-hidden="true"></span>
+            Institute of Science and Technology Advanced Development
+        </p>
+    </aside>
+
+    <section class="form-panel" aria-labelledby="form-title">
+        <div class="form-content">
+            <div class="form-header">
+                <p class="eyebrow">WELCOME BACK</p>
+                <h2 id="form-title">Sign in</h2>
+                <p class="intro">Enter your credentials to access your account.</p>
+            </div>
+
+            <div class="notice error" th:if="${param.error != null}" role="alert">
+                <svg class="notice-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M10 6v5M10 13.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>Unable to sign in. Check your username and password and try again.</span>
+            </div>
+            <div class="notice success" th:if="${param.logout != null}" role="status">
+                <svg class="notice-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M6 10l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>You have been signed out successfully.</span>
+            </div>
+
+            <div class="notice error" th:if="${param.oauth2error != null}" role="alert">
+                <span>Unable to sign in with your provider. Try again or use your username and password.</span>
+            </div>
+
+            <form id="login-form" th:action="@{/login}" method="post" novalidate>
+                <div class="field">
+                    <label for="username">Username</label>
+                    <div class="input-wrap">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <circle cx="10" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M3 18c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <input id="username" name="username" type="text" placeholder="Enter your username" autocomplete="username" autocapitalize="none" spellcheck="false" required aria-describedby="username-error" autofocus>
+                    </div>
+                    <p class="field-error" id="username-error" aria-live="polite"></p>
+                </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <div class="input-wrap password-wrap">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M7 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            <circle cx="10" cy="13.5" r="1.5" fill="currentColor"/>
+                        </svg>
+                        <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required aria-describedby="password-error">
+                        <button class="password-toggle" type="button" aria-controls="password" aria-label="Show password" aria-pressed="false" hidden disabled>
+                            <svg class="eye-open" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z" stroke="currentColor" stroke-width="1.5"/>
+                                <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="eye-closed" width="20" height="20" viewBox="0 0 20 20" fill="none" style="display:none">
+                                <path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z" stroke="currentColor" stroke-width="1.5"/>
+                                <line x1="3" y1="3" x2="17" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="field-error" id="password-error" aria-live="polite"></p>
+                </div>
+                <button class="submit" type="submit">
+                    <span class="submit-text">Sign in</span>
+                    <svg class="submit-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <svg class="submit-spinner" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="display:none">
+                        <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" stroke-dasharray="40 20" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <p id="submit-status" class="submit-status" role="status"></p>
+            </form>
+
+            <div class="divider" aria-hidden="true">
+                <span>or</span>
+            </div>
+
+            <nav class="social-login" aria-label="Other sign-in options">
+                <a class="social-button" th:href="@{/oauth2/authorization/github}">Continue with GitHub</a>
+                <a class="social-button" th:href="@{/oauth2/authorization/google}">Continue with Google</a>
+            </nav>
+
+            <p class="help">Need help signing in? Contact your administrator.</p>
+        </div>
+        <footer>
+            <span class="footer-secured">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M10 2l7 3v5c0 4.4-3 7.5-7 9-4-1.5-7-4.6-7-9V5l7-3z" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Secured connection
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>ISTAD Platform</span>
+        </footer>
+    </section>
+</main>
+</body>
+</html>

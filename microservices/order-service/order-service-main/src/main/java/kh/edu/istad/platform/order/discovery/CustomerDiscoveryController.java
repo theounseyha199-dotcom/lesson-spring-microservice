@@ -1,0 +1,47 @@
+package kh.edu.istad.platform.order.discovery;
+
+import kh.edu.istad.platform.order.client.adapter.CustomerServiceClientAdapter;
+import kh.edu.istad.platform.order.client.dto.PostCustomer;
+import kh.edu.istad.platform.order.client.dto.QueryCustomerResult;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping({"/api/discovery/customers", "/customers"})
+public class CustomerDiscoveryController {
+    private final CustomerServiceClientAdapter client;
+
+    public CustomerDiscoveryController(CustomerServiceClientAdapter client) {
+        this.client = client;
+    }
+
+    @GetMapping
+    public Mono<java.util.List<QueryCustomerResult>> list() {
+        return client.findAll().onErrorMap(error -> new ResponseStatusException(
+                HttpStatus.SERVICE_UNAVAILABLE, "Customer service unavailable", error));
+    }
+
+    @GetMapping("/{id}")
+    public Mono<QueryCustomerResult> find(@PathVariable("id") UUID id) {
+        return client.findById(id)
+                .onErrorMap(error -> {
+                    if (error instanceof WebClientResponseException.NotFound) {
+                        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found", error);
+                    }
+                    return new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                            "Customer service unavailable", error);
+                });
+    }
+
+    @PostMapping
+    public Mono<QueryCustomerResult> create(@RequestBody PostCustomer customer) {
+        return client.createCustomer(customer)
+                .onErrorMap(error -> new ResponseStatusException(
+                        HttpStatus.SERVICE_UNAVAILABLE, "Customer service unavailable", error));
+    }
+}

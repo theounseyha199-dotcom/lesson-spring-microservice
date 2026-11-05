@@ -1,0 +1,5 @@
+plugins { id 'spring-common-conventions' }
+dependencies {
+    api libs.order.domain.core
+    api 'io.projectreactor:reactor-core'
+}

@@ -1,0 +1,528 @@
+{
+  "startedAt": "2026-10-23T12:33:29.305Z",
+  "observations": [
+    {
+      "phase": "before-business-starts",
+      "capturedAt": "2026-10-23T12:33:52.516Z",
+      "elapsedMs": 1,
+      "registry": [],
+      "caller": {
+        "url": "http://localhost:8081/api/discovery/business",
+        "status": 503,
+        "body": {
+          "timestamp": "2026-10-23T12:33:52.619Z",
+          "path": "/api/discovery/business",
+          "status": 503,
+          "error": "Service Unavailable",
+          "requestId": "764d7f85-11"
+        }
+      },
+      "health": {
+        "unavailable": true
+      }
+    },
+    {
+      "phase": "started-health-enabled",
+      "capturedAt": "2026-10-23T12:34:02.355Z",
+      "elapsedMs": 9329,
+      "registry": [
+        {
+          "instanceId": "business-service:192.168.1.27:8082",
+          "hostName": "127.0.0.1",
+          "app": "BUSINESS-SERVICE",
+          "ipAddr": "127.0.0.1",
+          "status": "UP",
+          "overriddenStatus": "UNKNOWN",
+          "port": {
+            "$": 8082,
+            "@enabled": "true"
+          },
+          "securePort": {
+            "$": 443,
+            "@enabled": "false"
+          },
+          "countryId": 1,
+          "dataCenterInfo": {
+            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+            "name": "MyOwn"
+          },
+          "leaseInfo": {
+            "renewalIntervalInSecs": 5,
+            "durationInSecs": 15,
+            "registrationTimestamp": 1792758837599,
+            "lastRenewalTimestamp": 1792758837599,
+            "evictionTimestamp": 0,
+            "serviceUpTimestamp": 1792758837292
+          },
+          "metadata": {
+            "management.port": "8082"
+          },
+          "homePageUrl": "http://127.0.0.1:8082/",
+          "statusPageUrl": "http://127.0.0.1:8082/actuator/info",
+          "healthCheckUrl": "http://127.0.0.1:8082/actuator/health",
+          "vipAddress": "business-service",
+          "secureVipAddress": "business-service",
+          "isCoordinatingDiscoveryServer": "false",
+          "lastUpdatedTimestamp": "1792758837599",
+          "lastDirtyTimestamp": "1792758837183",
+          "actionType": "ADDED"
+        }
+      ],
+      "caller": {
+        "url": "http://localhost:8081/api/discovery/business",
+        "status": 200,
+        "body": {
+          "port": "8082",
+          "service": "business-service"
+        }
+      },
+      "health": {
+        "url": "http://localhost:8082/actuator/health",
+        "status": 200,
+        "body": {
+          "groups": [
+            "liveness",
+            "readiness"
+          ],
+          "status": "UP"
+        }
+      }
+    },
+    {
+      "phase": "dependency-down-health-enabled",
+      "capturedAt": "2026-10-23T12:34:12.831Z",
+      "elapsedMs": 10095,
+      "registry": [
+        {
+          "instanceId": "business-service:192.168.1.27:8082",
+          "hostName": "127.0.0.1",
+          "app": "BUSINESS-SERVICE",
+          "ipAddr": "127.0.0.1",
+          "status": "DOWN",
+          "overriddenStatus": "UNKNOWN",
+          "port": {
+            "$": 8082,
+            "@enabled": "true"
+          },
+          "securePort": {
+            "$": 443,
+            "@enabled": "false"
+          },
+          "countryId": 1,
+          "dataCenterInfo": {
+            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+            "name": "MyOwn"
+          },
+          "leaseInfo": {
+            "renewalIntervalInSecs": 5,
+            "durationInSecs": 15,
+            "registrationTimestamp": 1792758848820,
+            "lastRenewalTimestamp": 1792758848820,
+            "evictionTimestamp": 0,
+            "serviceUpTimestamp": 1792758837292
+          },
+          "metadata": {
+            "management.port": "8082"
+          },
+          "homePageUrl": "http://127.0.0.1:8082/",
+          "statusPageUrl": "http://127.0.0.1:8082/actuator/info",
+          "healthCheckUrl": "http://127.0.0.1:8082/actuator/health",
+          "vipAddress": "business-service",
+          "secureVipAddress": "business-service",
+          "isCoordinatingDiscoveryServer": "false",
+          "lastUpdatedTimestamp": "1792758848820",
+          "lastDirtyTimestamp": "1792758848309",
+          "actionType": "ADDED"
+        }
+      ],
+      "caller": {
+        "url": "http://localhost:8081/api/discovery/business",
+        "status": 503,
+        "body": {
+          "timestamp": "2026-10-23T12:34:12.837Z",
+          "path": "/api/discovery/business",
+          "status": 503,
+          "error": "Service Unavailable",
+          "requestId": "ed61e6e3-18"
+        }
+      },
+      "health": {
+        "url": "http://localhost:8082/actuator/health",
+        "status": 503,
+        "body": {
+          "groups": [
+            "liveness",
+            "readiness"
+          ],
+          "status": "DOWN"
+        }
+      }
+    },
+    {
+      "phase": "dependency-restored",
+      "capturedAt": "2026-10-23T12:34:22.264Z",
+      "elapsedMs": 7118,
+      "registry": [
+        {
+          "instanceId": "business-service:192.168.1.27:8082",
+          "hostName": "127.0.0.1",
+          "app": "BUSINESS-SERVICE",
+          "ipAddr": "127.0.0.1",
+          "status": "UP",
+          "overriddenStatus": "UNKNOWN",
+          "port": {
+            "$": 8082,
+            "@enabled": "true"
+          },
+          "securePort": {
+            "$": 443,
+            "@enabled": "false"
+          },
+          "countryId": 1,
+          "dataCenterInfo": {
+            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+            "name": "MyOwn"
+          },
+          "leaseInfo": {
+            "renewalIntervalInSecs": 5,
+            "durationInSecs": 15,
+            "registrationTimestamp": 1792758855695,
+            "lastRenewalTimestamp": 1792758872613,
+            "evictionTimestamp": 0,
+            "serviceUpTimestamp": 1792758837292
+          },
+          "metadata": {
+            "management.port": "8082"
+          },
+          "homePageUrl": "http://127.0.0.1:8082/",
+          "statusPageUrl": "http://127.0.0.1:8082/actuator/info",
+          "healthCheckUrl": "http://127.0.0.1:8082/actuator/health",
+          "vipAddress": "business-service",
+          "secureVipAddress": "business-service",
+          "isCoordinatingDiscoveryServer": "false",
+          "lastUpdatedTimestamp": "1792758855695",
+          "lastDirtyTimestamp": "1792758855181",
+          "actionType": "ADDED"
+        }
+      ],
+      "caller": {
+        "url": "http://localhost:8081/api/discovery/business",
+        "status": 200,
+        "body": {
+          "port": "8082",
+          "service": "business-service"
+        }
+      },
+      "health": {
+        "url": "http://localhost:8082/actuator/health",
+        "status": 200,
+        "body": {
+          "groups": [
+            "liveness",
+            "readiness"
+          ],
+          "status": "UP"
+        }
+      }
+    },
+    {
+      "phase": "graceful-shutdown",
+      "capturedAt": "2026-10-23T12:34:50.510Z",
+      "elapsedMs": 28107,
+      "registry": [],
+      "caller": {
+        "url": "http://localhost:8081/api/discovery/business",
+        "status": 503,
+        "body": {
+          "timestamp": "2026-10-23T12:34:50.517Z",
+          "path": "/api/discovery/business",
+          "status": 503,
+          "error": "Service Unavailable",
+          "requestId": "9e33fd98-24"
+        }
+      },
+      "health": {
+        "unavailable": true
+      }
+    },
+    {
+      "phase": "dependency-down-health-disabled",
+      "capturedAt": "2026-10-23T12:35:16.032Z",
+      "elapsedMs": 18091,
+      "registry": [
+        {
+          "instanceId": "business-service:192.168.1.27:8082",
+          "hostName": "127.0.0.1",
+          "app": "BUSINESS-SERVICE",
+          "ipAddr": "127.0.0.1",
+          "status": "UP",
+          "overriddenStatus": "UNKNOWN",
+          "port": {
+            "$": 8082,
+            "@enabled": "true"
+          },
+          "securePort": {
+            "$": 443,
+            "@enabled": "false"
+          },
+          "countryId": 1,
+          "dataCenterInfo": {
+            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+            "name": "MyOwn"
+          },
+          "leaseInfo": {
+            "renewalIntervalInSecs": 5,
+            "durationInSecs": 15,
+            "registrationTimestamp": 1792758895482,
+            "lastRenewalTimestamp": 1792758914942,
+            "evictionTimestamp": 0,
+            "serviceUpTimestamp": 1792758894973
+          },
+          "metadata": {
+            "management.port": "8082"
+          },
+          "homePageUrl": "http://127.0.0.1:8082/",
+          "statusPageUrl": "http://127.0.0.1:8082/actuator/info",
+          "healthCheckUrl": "http://127.0.0.1:8082/actuator/health",
+          "vipAddress": "business-service",
+          "secureVipAddress": "business-service",
+          "isCoordinatingDiscoveryServer": "false",
+          "lastUpdatedTimestamp": "1792758895482",
+          "lastDirtyTimestamp": "1792758894944",
+          "actionType": "ADDED"
+        }
+      ],
+      "caller": {
+        "url": "http://localhost:8081/api/discovery/business",
+        "status": 200,
+        "body": {
+          "service": "business-service",
+          "port": "8082"
+        }
+      },
+      "health": {
+        "url": "http://localhost:8082/actuator/health",
+        "status": 503,
+        "body": {
+          "groups": [
+            "liveness",
+            "readiness"
+          ],
+          "status": "DOWN"
+        }
+      }
+    },
+    {
+      "phase": "abrupt-stop-immediate",
+      "capturedAt": "2026-10-23T12:35:18.710Z",
+      "elapsedMs": 19,
+      "registry": [
+        {
+          "instanceId": "business-service:192.168.1.27:8082",
+          "hostName": "127.0.0.1",
+          "app": "BUSINESS-SERVICE",
+          "ipAddr": "127.0.0.1",
+          "status": "UP",
+          "overriddenStatus": "UNKNOWN",
+          "port": {
+            "$": 8082,
+            "@enabled": "true"
+          },
+          "securePort": {
+            "$": 443,
+            "@enabled": "false"
+          },
+          "countryId": 1,
+          "dataCenterInfo": {
+            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+            "name": "MyOwn"
+          },
+          "leaseInfo": {
+            "renewalIntervalInSecs": 5,
+            "durationInSecs": 15,
+            "registrationTimestamp": 1792758895482,
+            "lastRenewalTimestamp": 1792758914942,
+            "evictionTimestamp": 0,
+            "serviceUpTimestamp": 1792758894973
+          },
+          "metadata": {
+            "management.port": "8082"
+          },
+          "homePageUrl": "http://127.0.0.1:8082/",
+          "statusPageUrl": "http://127.0.0.1:8082/actuator/info",
+          "healthCheckUrl": "http://127.0.0.1:8082/actuator/health",
+          "vipAddress": "business-service",
+          "secureVipAddress": "business-service",
+          "isCoordinatingDiscoveryServer": "false",
+          "lastUpdatedTimestamp": "1792758895482",
+          "lastDirtyTimestamp": "1792758894944",
+          "actionType": "ADDED"
+        }
+      ],
+      "caller": {
+        "url": "http://localhost:8081/api/discovery/business",
+        "status": 503,
+        "body": {
+          "timestamp": "2026-10-23T12:35:18.719Z",
+          "path": "/api/discovery/business",
+          "status": 503,
+          "error": "Service Unavailable",
+          "requestId": "3a9855e9-30"
+        }
+      },
+      "health": {
+        "unavailable": true
+      }
+    },
+    {
+      "phase": "abrupt-stop-evicted",
+      "capturedAt": "2026-10-23T12:35:50.944Z",
+      "elapsedMs": 32253,
+      "registry": [],
+      "caller": {
+        "url": "http://localhost:8081/api/discovery/business",
+        "status": 503,
+        "body": {
+          "timestamp": "2026-10-23T12:35:50.951Z",
+          "path": "/api/discovery/business",
+          "status": 503,
+          "error": "Service Unavailable",
+          "requestId": "57dbebb9-32"
+        }
+      },
+      "health": {
+        "unavailable": true
+      }
+    },
+    {
+      "phase": "restarted-new-port",
+      "capturedAt": "2026-10-23T12:36:02.319Z",
+      "elapsedMs": 11242,
+      "registry": [
+        {
+          "instanceId": "business-service:192.168.1.27:8182",
+          "hostName": "127.0.0.1",
+          "app": "BUSINESS-SERVICE",
+          "ipAddr": "127.0.0.1",
+          "status": "UP",
+          "overriddenStatus": "UNKNOWN",
+          "port": {
+            "$": 8182,
+            "@enabled": "true"
+          },
+          "securePort": {
+            "$": 443,
+            "@enabled": "false"
+          },
+          "countryId": 1,
+          "dataCenterInfo": {
+            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+            "name": "MyOwn"
+          },
+          "leaseInfo": {
+            "renewalIntervalInSecs": 5,
+            "durationInSecs": 15,
+            "registrationTimestamp": 1792758956111,
+            "lastRenewalTimestamp": 1792758956111,
+            "evictionTimestamp": 0,
+            "serviceUpTimestamp": 1792758955599
+          },
+          "metadata": {
+            "management.port": "8182"
+          },
+          "homePageUrl": "http://127.0.0.1:8182/",
+          "statusPageUrl": "http://127.0.0.1:8182/actuator/info",
+          "healthCheckUrl": "http://127.0.0.1:8182/actuator/health",
+          "vipAddress": "business-service",
+          "secureVipAddress": "business-service",
+          "isCoordinatingDiscoveryServer": "false",
+          "lastUpdatedTimestamp": "1792758956111",
+          "lastDirtyTimestamp": "1792758955449",
+          "actionType": "ADDED"
+        }
+      ],
+      "caller": {
+        "url": "http://localhost:8081/api/discovery/business",
+        "status": 200,
+        "body": {
+          "port": "8182",
+          "service": "business-service"
+        }
+      },
+      "health": {
+        "url": "http://localhost:8182/actuator/health",
+        "status": 200,
+        "body": {
+          "groups": [
+            "liveness",
+            "readiness"
+          ],
+          "status": "UP"
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "01-started-up.png",
+      "url": "http://localhost:8761",
+      "status": 200
+    },
+    {
+      "file": "02-dependency-down-health.png",
+      "url": "http://localhost:8082/actuator/health",
+      "status": 503
+    },
+    {
+      "file": "03-dependency-down-registry.png",
+      "url": "http://localhost:8761",
+      "status": 200
+    },
+    {
+      "file": "04-dependency-down-caller.png",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 503
+    },
+    {
+      "file": "05-dependency-restored-up.png",
+      "url": "http://localhost:8761",
+      "status": 200
+    },
+    {
+      "file": "06-graceful-shutdown.png",
+      "url": "http://localhost:8761",
+      "status": 200
+    },
+    {
+      "file": "07-health-disabled-registry-up.png",
+      "url": "http://localhost:8761",
+      "status": 200
+    },
+    {
+      "file": "08-health-disabled-actuator-down.png",
+      "url": "http://localhost:8082/actuator/health",
+      "status": 503
+    },
+    {
+      "file": "09-abrupt-stop-stale-registration.png",
+      "url": "http://localhost:8761",
+      "status": 200
+    },
+    {
+      "file": "10-abrupt-stop-evicted.png",
+      "url": "http://localhost:8761",
+      "status": 200
+    },
+    {
+      "file": "11-restarted-new-port.png",
+      "url": "http://localhost:8761",
+      "status": 200
+    },
+    {
+      "file": "12-restarted-caller-response.png",
+      "url": "http://localhost:8081/api/discovery/business",
+      "status": 200
+    }
+  ],
+  "completedAt": "2026-10-23T12:36:02.541Z"
+}

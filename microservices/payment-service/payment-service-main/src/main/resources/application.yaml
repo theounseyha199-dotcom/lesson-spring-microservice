@@ -1,0 +1,22 @@
+server:
+  port: ${PAYMENT_PORT:8083}
+spring:
+  application:
+    name: payment-service
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      discovery:
+        prefer-ip-address: true
+        health-check-path: /actuator/health
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        health-check-interval: 15s
+  mongodb:
+    uri: ${PAYMENT_MONGO_URI:mongodb://mongod:mongod@localhost:2026/istad_payment?authSource=admin}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

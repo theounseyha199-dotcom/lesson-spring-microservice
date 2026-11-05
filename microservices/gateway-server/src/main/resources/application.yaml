@@ -1,0 +1,53 @@
+server:
+  port: 9999
+
+spring:
+  application:
+    name: gateway-server
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      discovery:
+        prefer-ip-address: true
+        health-check-path: /actuator/health
+        health-check-url: ${GATEWAY_HEALTH_CHECK_URL:http://host.docker.internal:${server.port}/actuator/health}
+        health-check-interval: 15s
+
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+
+          routes:
+            - id: my-order-service
+              uri: lb://order-service
+              predicates:
+                - Path=/my-orders/**
+              filters:
+                - RewritePath=/my-orders/?(?<segment>.*), /$\{segment}
+            - id: jsonplaceholder-service
+              uri: https://jsonplaceholder.typicode.com
+              predicates:
+               - Path=/jph/**
+              filters:
+               - RewritePath=/jph/?(?<segment>.*), /$\{segment}
+            - id: frontend-service
+              uri: ${FRONTEND_URL:http://localhost:3000}
+              order: 1000
+              predicates:
+                - Path=/**
+
+  profiles:
+    active: dev
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health , gateway, info
+  endpoint:
+    gateway:
+      access: read_only

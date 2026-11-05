@@ -1,0 +1,4 @@
+plugins { id 'spring-common-conventions' }
+dependencies {
+    api project(':payment-service-domain:payment-domain-core')
+}

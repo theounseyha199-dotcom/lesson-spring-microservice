@@ -2,14 +2,14 @@ package kh.edu.istad.common.domain.entity;
 
 import java.util.Objects;
 
-public class BaseEntity <ID>{
-    private  ID id;
-
+public class BaseEntity <ID> {
+    private ID id;
 
     public ID getId() {
         return id;
     }
-    public void SetId(ID id) {
+
+    public void setId(ID id) {
         this.id = id;
     }
 
@@ -23,9 +23,5 @@ public class BaseEntity <ID>{
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
-    }
-
-    protected void setId(ID customerId) {
-        this.id = customerId;
     }
 }
