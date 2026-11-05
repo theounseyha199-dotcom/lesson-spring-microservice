@@ -10,11 +10,12 @@ public record Money(
 ) {
     public static final Money ZERO = new Money(BigDecimal.ZERO);
 
-    public void isGreaterThanZero() {
-        if (!(amount.compareTo(BigDecimal.ZERO) > 0)) {
-            System.out.println("Money is not greater than zero");
-            throw new RuntimeException("Money is  not grater than zero");
-        }
+    public boolean isGreaterThanZero() {
+        return amount != null && amount.compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    public boolean isLessThanZero() {
+        return amount != null && amount.compareTo(BigDecimal.ZERO) < 0;
     }
     //more logic
 
