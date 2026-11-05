@@ -56,3 +56,6 @@ docs/screenshots/checkout/*.log
 **/.env
 **/.env.*
 !**/.env.example
+
+# Local runtime state and signing keys
+.local/
