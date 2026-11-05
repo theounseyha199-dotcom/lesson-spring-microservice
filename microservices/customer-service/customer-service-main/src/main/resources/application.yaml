@@ -13,6 +13,12 @@ server:
 # 2. SPRING CONFIGURATION
 # ==========================================
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH_ISSUER:http://localhost:9000}
+          audiences: customer-service
   cloud:
     consul:
       host: ${CONSUL_HOST:localhost}
