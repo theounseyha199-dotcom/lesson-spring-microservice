@@ -4,8 +4,8 @@ import kh.edu.istad.platform.order.persistence.entity.BusinessEntity;
 import kh.edu.istad.platform.order.persistence.entity.BusinessEntityId;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 public interface BusinessReactiveRepository extends R2dbcRepository<BusinessEntity, BusinessEntityId> {
-    List<BusinessEntity> findAllByBusinessActive(String businessActive);
+    Flux<BusinessEntity> findAllByBusinessActive(Boolean businessActive);
 }

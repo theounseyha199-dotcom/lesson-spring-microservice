@@ -1,31 +1,31 @@
 package kh.edu.istad.platform.order.persistence.entity;
 
-
-import com.mongodb.lang.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
-@Table("businesses")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table("businesses")
+@ToString
 public class BusinessEntity {
 
     @Id
     @Embedded.Nullable
     private BusinessEntityId businessEntityId;
 
-    private String businessActive;
+    @Column("business_active")
+    private Boolean businessActive;
+    @Column("product_name")
     private String productName;
     @Column("product_price")
     private BigDecimal productPrice;
-
 }

@@ -9,17 +9,16 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Table("orders")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table("orders")
 public class OrderEntity {
-
     @Id
     private UUID id;
     private UUID businessId;
     private UUID customerId;
-    private String failureMessage;
+    private String failureMessages;
     private String orderStatus;
     private BigDecimal price;
     private UUID trackingId;
