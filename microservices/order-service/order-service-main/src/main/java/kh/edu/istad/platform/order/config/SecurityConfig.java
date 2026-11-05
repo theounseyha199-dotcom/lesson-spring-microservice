@@ -14,8 +14,15 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/api/webflux", "/actuator/health", "/actuator/health/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/customers", "/customers/**",
+                                "/api/discovery/customers", "/api/discovery/customers/**")
+                        .hasAuthority("SCOPE_api.read")
+                        .requestMatchers("/customers", "/customers/**",
+                                "/api/discovery/customers", "/api/discovery/customers/**")
+                        .hasAuthority("SCOPE_api.write")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
     }
 }

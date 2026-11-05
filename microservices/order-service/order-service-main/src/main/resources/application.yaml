@@ -2,6 +2,12 @@ server:
   port: 9092
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH_ISSUER:http://localhost:9000}
+          audiences: order-service
   application:
     name: order-service
 
@@ -13,10 +19,13 @@ spring:
         base-url: lb://payment-service
 
   profiles:
-    active: dev
+    active: dev,oauth2
 
   config:
-    import: "optional:consul:"
+    import:
+      - "optional:consul:"
+      - optional:file:./.local/runtime.properties
+      - optional:file:../../.local/runtime.properties
 
   # PostgreSQL - Reactive
   r2dbc:
@@ -109,11 +118,11 @@ spring:
         registration:
           order-service:
             provider: auth-server
-            client-id: postman-client
-            client-secret: dev-secret-change-me
+            client-id: order-service
+            client-secret: ${ORDER_CLIENT_SECRET}
             client-authentication-method: client_secret_basic
             authorization-grant-type: client_credentials
-            scope: api.read,api.write
+            scope: customer.read,customer.write
           payment-client:
             provider: auth-server
             client-id: postman-client
@@ -123,4 +132,4 @@ spring:
             scope: api.read,api.write
         provider:
           auth-server:
-            token-uri: http://localhost:9000/oauth2/token
+            token-uri: ${AUTH_TOKEN_URI:http://localhost:9000/oauth2/token}
