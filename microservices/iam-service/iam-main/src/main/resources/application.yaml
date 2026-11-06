@@ -51,7 +51,7 @@ spring:
           facebook:
             authorization-uri: https://www.facebook.com/dialog/oauth
             token-uri: https://graph.facebook.com/oauth/access_token
-            user-info-uri: https://graph.facebook.com/me?fields=id,name
+            user-info-uri: https://graph.facebook.com/me?fields=id,name,first_name,last_name,email
             user-name-attribute: id
           telegram:
             authorization-uri: https://oauth.telegram.org/auth
@@ -89,6 +89,7 @@ app:
 
 gg:
   jte:
-    developmentMode: true
+    developmentMode: false
+    usePrecompiledTemplates: true
     templateLocation: src/main/jte
     templateSuffix: .jte

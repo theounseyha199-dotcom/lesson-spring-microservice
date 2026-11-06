@@ -17,6 +17,7 @@ public class LoginController {
         model.addAttribute("loginError", request.getParameterMap().containsKey("error"));
         model.addAttribute("loggedOut", request.getParameterMap().containsKey("logout"));
         model.addAttribute("oauth2Error", request.getParameterMap().containsKey("oauth2error"));
+        model.addAttribute("registered", request.getParameterMap().containsKey("registered"));
         return "login";
     }
 }

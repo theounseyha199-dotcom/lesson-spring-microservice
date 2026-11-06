@@ -13,9 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestCustomizers;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -42,6 +39,7 @@ public class SecurityConfig {
                     );
 
                     // Enable OpenID Connect 1.0
+                    authorizationServer.authorizationEndpoint(endpoint -> endpoint.consentPage("/oauth2/consent"));
                     authorizationServer.oidc(oidc -> oidc.clientRegistrationEndpoint(registration -> registration
                             .authenticationProviders(ClientRegistrationPolicy::configure)));
                 })
@@ -69,25 +67,22 @@ public class SecurityConfig {
     @Bean
     @Order(3)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
-            ClientRegistrationRepository registrations)
+            org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver resolver,
+            istad.ha.iamservice.infrastructure.federation.FederationAuthorizationRequests requests,
+            istad.ha.iamservice.infrastructure.federation.FederationLoginHandler federation)
             throws Exception {
-        var resolver = new DefaultOAuth2AuthorizationRequestResolver(registrations, "/oauth2/authorization");
-        resolver.setAuthorizationRequestCustomizer(builder -> {
-            if ("telegram".equals(builder.build().getAttribute("registration_id"))) {
-                OAuth2AuthorizationRequestCustomizers.withPkce().accept(builder);
-            }
-        });
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/login", "/register", "/federation/complete", "/federation/cancel", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 // Form login handles the redirect to the login page from the
                 // authorization server filter chain
                 .formLogin(form -> form.loginPage("/login").permitAll())
                 .oauth2Login(oauth2 -> oauth2.loginPage("/login")
-                        .authorizationEndpoint(endpoint -> endpoint.authorizationRequestResolver(resolver))
-                        .failureUrl("/login?oauth2error").permitAll());
+                        .authorizationEndpoint(endpoint -> endpoint.authorizationRequestResolver(resolver)
+                                .authorizationRequestRepository(requests))
+                        .successHandler(federation).failureHandler(federation).permitAll());
 
         return http.build();
     }

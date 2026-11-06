@@ -84,6 +84,9 @@ class AuthorizationServerIntegrationTests extends IamIntegrationTestSupport {
                 .queryParam("client_id", client.getClientId()).queryParam("redirect_uri", CALLBACK)
                 .queryParam("scope", String.join(" ", scopes)).queryParam("state", state).queryParam("nonce", unique())
                 .queryParam("code_challenge", challenge).queryParam("code_challenge_method", "S256")).andReturn().getResponse();
+        if (response.getStatus() == 302 && response.getHeader("Location").contains("/oauth2/consent?")) {
+            response = mvc.perform(get(URI.create(response.getHeader("Location"))).session(session)).andExpect(status().isOk()).andReturn().getResponse();
+        }
         if (response.getStatus() == 200) {
             var match = Pattern.compile("name=\"state\"[^>]*value=\"([^\"]+)\"").matcher(response.getContentAsString());
             assertTrue(match.find(), "Consent response must contain state");

@@ -1,6 +1,11 @@
+plugins { id 'gg.jte.gradle' version '3.2.5' }
+
 dependencies {
     implementation project(':iam-domain:iam-application-service')
     implementation 'gg.jte:jte-spring-boot-starter-4:3.2.5'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 }
+
+
+jte { generate() }

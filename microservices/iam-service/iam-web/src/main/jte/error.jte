@@ -1,20 +1,6 @@
+@import istad.ha.iamservice.web.view.Page
+@param Page p
 @param int status
-@param String contextPath
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Unable to open page · ISTAD</title>
-    <link rel="stylesheet" href="${contextPath}/css/login.css">
-</head>
-<body>
-<main class="login-shell">
-    <section class="form-panel" aria-labelledby="error-title">
-        <h1 id="error-title">Unable to open this page</h1>
-        <p>Error ${status}. Please try again.</p>
-        <a href="${contextPath}/login">Return to sign in</a>
-    </section>
-</main>
-</body>
-</html>
+@template.shared.layout(p=p,title=p.t("error.pageTitle"),content=@`
+<section class="card"><h1>${p.t("error.pageTitle")}</h1><p>${p.t("error.page",status)}</p><a href="${p.url("/login")}">${p.t("login.title")}</a></section>
+`)

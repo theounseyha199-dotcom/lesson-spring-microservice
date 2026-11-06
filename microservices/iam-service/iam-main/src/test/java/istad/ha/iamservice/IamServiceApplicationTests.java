@@ -83,12 +83,9 @@ class IamServiceApplicationTests extends IamIntegrationTestSupport {
                 .andExpect(redirectedUrl("/login"));
     }
     @Test
-    void authenticatedHomeRendersJteForProviderPrincipals() throws Exception {
+    void unprovisionedProviderPrincipalsCannotOpenAnInternalProfile() throws Exception {
         mvc.perform(get("/").with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user("facebook-user")))
-                .andExpect(status().isOk())
-                .andExpect(view().name("home"))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Welcome, facebook-user.")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("action=\"/logout\"")));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -113,7 +110,7 @@ class IamServiceApplicationTests extends IamIntegrationTestSupport {
         mvc.perform(get("/iam/login").contextPath("/iam"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("action=\"/iam/login\"")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("href=\"/iam/css/login.css\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("href=\"/iam/css/account.css\"")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("href=\"/iam/oauth2/authorization/telegram\"")))
                 .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Unable to sign in."))))
                 .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("You have been signed out successfully."))))
@@ -185,7 +182,7 @@ class IamServiceApplicationTests extends IamIntegrationTestSupport {
         mvc.perform(get("/login/oauth2/code/github").param("error", "access_denied"))
                 .andExpect(redirectedUrl("/login?oauth2error"));
         mvc.perform(get("/login?oauth2error"))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Unable to sign in with your provider.")));
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Provider sign-in could not be completed.")));
     }
 
 }
