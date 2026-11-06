@@ -41,10 +41,13 @@ public class JpaAssignmentAdapter implements AssignmentRepository {
         entityManager.refresh(entity);
         return DomainMapper.userPermission(entity);
     }
-    @Override public List<UserRole> findUserRoles(long userId) { return userRoles.findByUserId(userId).stream().map(DomainMapper::userRole).toList(); }
-    @Override public List<RolePermission> findRolePermissions(Set<Long> roleIds) {
+    @Override
+    public List<UserRole> findUserRoles(long userId) { return userRoles.findByUserId(userId).stream().map(DomainMapper::userRole).toList(); }
+    @Override
+    public List<RolePermission> findRolePermissions(Set<Long> roleIds) {
         if (roleIds.isEmpty()) return List.of();
         return rolePermissions.findByRoleIdIn(roleIds).stream().map(DomainMapper::rolePermission).toList();
     }
-    @Override public List<UserPermission> findUserPermissions(long userId) { return userPermissions.findByUserId(userId).stream().map(DomainMapper::userPermission).toList(); }
+    @Override
+    public List<UserPermission> findUserPermissions(long userId) { return userPermissions.findByUserId(userId).stream().map(DomainMapper::userPermission).toList(); }
 }

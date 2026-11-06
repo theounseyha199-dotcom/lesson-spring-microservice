@@ -31,7 +31,7 @@ final class ClientRegistrationPolicy {
         }
     }
     private static void validate(OidcClientRegistrationAuthenticationContext context) {
-        OidcClientRegistration request = context.<OidcClientRegistrationAuthenticationToken>getAuthentication()codex.getClientRegistration();
+        OidcClientRegistration request = context.<OidcClientRegistrationAuthenticationToken>getAuthentication().getClientRegistration();
         if (request == null) throw invalid("invalid_client_metadata");
         if (request.getScopes() == null || !request.getScopes().contains("openid") || !SCOPES.containsAll(request.getScopes())) {
             throw invalid(OAuth2ErrorCodes.INVALID_SCOPE);
