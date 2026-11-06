@@ -1,0 +1,94 @@
+
+spring:
+  config:
+    import:
+      - optional:file:./.local/runtime.properties
+      - optional:file:../../.local/runtime.properties
+
+  application:
+    name: iam-service
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${IAM_GITHUB_CLIENT_ID}
+            client-secret: ${IAM_GITHUB_CLIENT_SECRET}
+            scope:
+              - read:user
+              - user:email
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+          google:
+            client-id: ${IAM_GOOGLE_CLIENT_ID}
+            client-secret: ${IAM_GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - profile
+              - email
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+          facebook:
+            client-id: ${IAM_FACEBOOK_CLIENT_ID}
+            client-secret: ${IAM_FACEBOOK_CLIENT_SECRET}
+            client-authentication-method: client_secret_post
+            scope:
+              - public_profile
+            authorization-grant-type: authorization_code
+            redirect-uri: "https://lagging-grouped-bobsled.ngrok-free.dev/login/oauth2/code/facebook"
+            client-name: Facebook
+          telegram:
+            client-id: ${IAM_TELEGRAM_CLIENT_ID}
+            client-secret: ${IAM_TELEGRAM_CLIENT_SECRET}
+            client-authentication-method: client_secret_basic
+            scope:
+              - openid
+              - profile
+            authorization-grant-type: authorization_code
+            redirect-uri: "https://lagging-grouped-bobsled.ngrok-free.dev/login/oauth2/code/telegram"
+            client-name: Telegram
+        provider:
+          facebook:
+            authorization-uri: https://www.facebook.com/dialog/oauth
+            token-uri: https://graph.facebook.com/oauth/access_token
+            user-info-uri: https://graph.facebook.com/me?fields=id,name
+            user-name-attribute: id
+          telegram:
+            authorization-uri: https://oauth.telegram.org/auth
+            token-uri: https://oauth.telegram.org/token
+            jwk-set-uri: https://oauth.telegram.org/.well-known/jwks.json
+            user-name-attribute: sub
+
+  datasource:
+    url: ${IAM_DB_URL:jdbc:postgresql://localhost:9543/db_oauth2}
+    username: ${IAM_DB_USER:iteuser}
+    password: ${IAM_DB_PASSWORD}
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+server:
+  port: ${IAM_PORT:9000}
+
+app:
+  iam:
+    issuer: ${IAM_ISSUER:http://localhost:${server.port}}
+    signing-key-file: ${IAM_SIGNING_KEY_FILE:./.local/iam-signing-key.json}
+    password: ${IAM_PASSWORD}
+    client-id: ${IAM_CLIENT_ID:oidc-client}
+    client-secret: ${IAM_CLIENT_SECRET}
+    postman-client-secret: ${IAM_POSTMAN_CLIENT_SECRET}
+    bootstrap-admin-password: ${IAM_BOOTSTRAP_ADMIN_PASSWORD}
+    bootstrap-owner-password: ${IAM_BOOTSTRAP_OWNER_PASSWORD}
+    registration-client-secret: ${IAM_REGISTRATION_CLIENT_SECRET}
+    redirect-uri: ${IAM_REDIRECT_URI:http://127.0.0.1:8080/login/oauth2/code/oidc-client}
+    postman-redirect-uri: ${IAM_POSTMAN_REDIRECT_URI:https://oauth.pstmn.io/v1/browser-callback}
+    logout-redirect-uri: ${IAM_LOGOUT_REDIRECT_URI:http://127.0.0.1:8080/}
+
+
+gg:
+  jte:
+    developmentMode: true
+    templateLocation: src/main/jte
+    templateSuffix: .jte

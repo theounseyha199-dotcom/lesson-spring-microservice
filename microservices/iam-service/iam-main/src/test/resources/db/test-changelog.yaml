@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/legacy-test-changelog.yaml
+  - include:
+      file: db/changelog/ddl/006-domain-model.yaml
