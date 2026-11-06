@@ -69,6 +69,8 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
 server:
+  # Honor HTTPS forwarded by the local reverse proxy (Tomcat trusted-proxy handling).
+  forward-headers-strategy: native
   port: ${IAM_PORT:9000}
 
 app:

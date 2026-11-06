@@ -185,4 +185,21 @@ class IamServiceApplicationTests extends IamIntegrationTestSupport {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Provider sign-in could not be completed.")));
     }
 
+    @Test
+    void trustedProxyHttpsProducesHttpsProviderCallbacksAndLocalHttpStillWorks() throws Exception {
+        var http=java.net.http.HttpClient.newBuilder().followRedirects(java.net.http.HttpClient.Redirect.NEVER).build();
+        for (String provider : java.util.List.of("google","github")) {
+            var forwarded=java.net.http.HttpRequest.newBuilder(java.net.URI.create("http://localhost:"+port+"/oauth2/authorization/"+provider))
+                    .header("X-Forwarded-Proto","https").header("X-Forwarded-Host","public-iam.example.com")
+                    .header("X-Forwarded-Port","443").header("X-Forwarded-For","198.51.100.40").GET().build();
+            var response=http.send(forwarded,java.net.http.HttpResponse.BodyHandlers.discarding());
+            assertEquals(302,response.statusCode());
+            String location=java.net.URLDecoder.decode(response.headers().firstValue("Location").orElseThrow(),java.nio.charset.StandardCharsets.UTF_8);
+            assertTrue(location.contains("redirect_uri=https://public-iam.example.com/login/oauth2/code/"+provider),location);
+            var direct=http.send(java.net.http.HttpRequest.newBuilder(java.net.URI.create("http://localhost:"+port+"/oauth2/authorization/"+provider)).GET().build(),java.net.http.HttpResponse.BodyHandlers.discarding());
+            String directLocation=java.net.URLDecoder.decode(direct.headers().firstValue("Location").orElseThrow(),java.nio.charset.StandardCharsets.UTF_8);
+            assertTrue(directLocation.contains("redirect_uri=http://localhost:"+port+"/login/oauth2/code/"+provider),directLocation);
+        }
+    }
+
 }
