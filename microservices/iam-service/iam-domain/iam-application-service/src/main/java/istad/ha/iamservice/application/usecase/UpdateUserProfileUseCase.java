@@ -20,6 +20,8 @@ public final class UpdateUserProfileUseCase {
         return context.transactions().write(() -> {
             Checks.required(command, "command"); Checks.required(command.patch(), "patch");
             var user = context.user(command.userUuid());
+            if (command.expectedVersion() != null && command.expectedVersion() != user.audit().version())
+                throw new ApplicationException("concurrent_update", "Profile changed; reload before saving");
             return context.userResult(context.users().save(command.patch().apply(user, context.actor(), context.now())));
         });
     }
