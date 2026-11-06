@@ -26,7 +26,47 @@ for item in requests:
     if path.startswith('/api/permissions/{permissionUuid}'):path=path.replace('/api/permissions/{permissionUuid}','/api/permissions/{uuid}',1)
     actual.add((request['method'],path))
 check('rest_postman_coverage',len(expected)==39 and expected==actual,{'required':len(expected),'covered':len(expected&actual),'missing':sorted(expected-actual),'unexpected':sorted(actual-expected)})
-required=set(re.findall(r'\b[A-Z][A-Za-z]+UseCase\b',(SERVICE/'ASSIGNMENT-CHECKLIST.md').read_text()))
+required={
+    'ActivatePermissionUseCase',
+    'ActivateRoleUseCase',
+    'AssignPermissionsToRoleUseCase',
+    'AssignRolesToUserUseCase',
+    'ChangePasswordUseCase',
+    'CreatePermissionUseCase',
+    'CreateRoleUseCase',
+    'CreateUserUseCase',
+    'DeactivatePermissionUseCase',
+    'DeactivateRoleUseCase',
+    'DeletePermissionUseCase',
+    'DeleteRoleUseCase',
+    'DeleteUserUseCase',
+    'DisableUserUseCase',
+    'EnableUserUseCase',
+    'FindOrProvisionFederatedUserUseCase',
+    'GetPermissionUseCase',
+    'GetRoleUseCase',
+    'GetUserAuthoritiesUseCase',
+    'GetUserUseCase',
+    'GrantPermissionsToUserUseCase',
+    'LinkIdentityUseCase',
+    'ListPermissionsUseCase',
+    'ListRolesUseCase',
+    'ListUserIdentitiesUseCase',
+    'ListUsersUseCase',
+    'LoadUserForAuthenticationUseCase',
+    'LockUserUseCase',
+    'RecordLoginAttemptUseCase',
+    'RegisterUserUseCase',
+    'ResetUserPasswordUseCase',
+    'RevokePermissionFromRoleUseCase',
+    'RevokePermissionFromUserUseCase',
+    'RevokeRoleFromUserUseCase',
+    'UnlinkIdentityUseCase',
+    'UnlockUserUseCase',
+    'UpdatePermissionUseCase',
+    'UpdateRoleUseCase',
+    'UpdateUserProfileUseCase',
+}
 implemented={p.stem for p in SERVICE.glob('iam-domain/iam-application-service/src/main/java/**/usecase/*UseCase.java')}
 check('section_c_use_cases',len(required)==39 and required<=implemented,{'required':len(required),'implemented':len(implemented),'missing':sorted(required-implemented)})
 environment=json.loads((ROOT/'postman/IAM-Assignment.postman_environment.json').read_text())

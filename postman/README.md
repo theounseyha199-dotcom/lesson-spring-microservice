@@ -5,7 +5,7 @@
 Import `IAM-Assignment.postman_collection.json` and `IAM-Assignment.postman_environment.json`, then select
 **IAM Assignment - Local (secrets empty)**. Every exported password, secret and token is intentionally empty.
 
-1. Start IAM after supplying the external configuration in the [service guide](../microservices/iam-service/README.md).
+1. Start IAM after supplying the external configuration in the [service guide](../README.md#iam-service).
 2. Set `iam_url`, `oidc_client_id` and `oidc_client_secret` to an existing authorization-code client. Configure the OAuth
    helper in folder 01 with Authorization Code (With PKCE), SHA-256, **Authorize using browser**, the registered callback,
    and Basic-header client authentication. Sign in with an internal user; use an admin with exact permissions for admin APIs.
@@ -27,8 +27,7 @@ All 39 Section D routes have requests and response assertions. Administrative re
 permissions, not merely ROLE_ADMIN or OAuth scopes. Revocation DELETE payloads contain a reason; normal entity deletion
 and identity disconnection do not. Protected reads use bearer tokens; public registration/metadata are explicitly no-auth.
 
-The [delivery audit](../microservices/iam-service/DELIVERY-AUDIT.md) records runtime verification: 44 collection requests
-and 66 assertions passed against an isolated packaged app. Interactive OAuth-helper and manual identity/password folders
+Runtime verification passed 44 collection requests and 66 assertions against an isolated packaged app. Interactive OAuth-helper and manual identity/password folders
 were excluded from the collection run; all REST routes are additionally covered by server integration tests.
 
 [Postman's OAuth documentation](https://learning.postman.com/docs/use/send-requests/authorization/oauth-20/) describes

@@ -11,7 +11,7 @@ docker compose --env-file .local/runtime.properties -f deployment/postgres/docke
 
 The network-create command is only for a missing network. PostgreSQL is exposed on 9543; MongoDB uses 2026, Consul 8500
 and Vault 8200. Other definitions are in deployment/mongodb, deployment/consul and deployment/vault. See the
-[project guide](../README.md) and [IAM setup](../microservices/iam-service/README.md) for application configuration.
+[project guide](../README.md) and [IAM setup](../README.md#iam-service) for application configuration.
 
 PostgreSQL requires external IAM_DB_PASSWORD instead of a source-code password. For a current database, use its existing
 value; editing the compose environment does not rotate a stored PostgreSQL role password. Initialization scripts run

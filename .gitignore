@@ -62,3 +62,13 @@ docs/screenshots/checkout/*.log
 
 # JTE runtime-compiled templates
 **/jte-classes/
+
+# Local coding-tool configuration and working notes
+.agents/
+.codex/
+.claude/
+.cursor/
+.cursorrules
+AGENTS.md
+CLAUDE.md
+.github/copilot-instructions.md
