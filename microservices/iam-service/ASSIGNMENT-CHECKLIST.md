@@ -1,14 +1,14 @@
 # IAM assignment requirements checklist
 
 Source: III. Assignment - Spring Authorization Server & IAM Service.pdf, 14 pages.
-Reviewed 6 November 2026. Unchecked items below are acceptance criteria, not a completed implementation audit.
+Audited 6 November 2026. See DELIVERY-AUDIT.md for automated evidence and LIVE-PROVIDER-ACCEPTANCE.md for the remaining human account checks. Checked items record implementation/delivery evidence; they do not claim a grade or live-provider acceptance.
 The page-by-page transcription below preserves field types, constraints, use-case signatures, endpoint authorities, payload examples, and claim lists.
 The original PDF remains authoritative for visual formatting and Khmer text.
 
 ## Acceptance criteria
 
-- [ ] Objective: OAuth 2.1 / OIDC 1.0 IAM with User, Role and Permission as core domain; Authorization Server as adapter.
-- [ ] A: All seven modules and the exact dependency direction; domain plain Java; domain/application free of Authorization Server, JPA and web code.
+- [x] Objective: OAuth 2.1 / OIDC 1.0 IAM with User, Role and Permission as core domain; Authorization Server as adapter.
+- [x] A: All seven modules and the exact dependency direction; domain plain Java; domain/application free of Authorization Server, JPA and web code.
 - [x] B.1: Every users column, length, uniqueness/nullability rule, OIDC mapping and UserDetails account flag; lower-case email; nullable social-only password; UUID subject; E.164 phone, ISO birthdate/country, IANA zoneinfo; login/password timestamps and failed attempts.
 - [x] B.2: Every roles column; UUID/name uniqueness; protected system roles; active flag; deletion/audit/version columns.
 - [x] B.3: Every permissions column; resource:action naming; protected system permissions; active flag; deletion/audit/version columns.
@@ -30,18 +30,18 @@ The original PDF remains authoritative for visual formatting and Khmer text.
 - [x] E.1: Explicit JdbcRegisteredClientRepository, JdbcOAuth2AuthorizationService and JdbcOAuth2AuthorizationConsentService; UserDetailsService delegates to LoadUserForAuthenticationUseCase; access token includes roles and permissions.
 - [x] E.2: Scope-controlled openid/profile/email/phone/address claims, including all listed profile fields and users.uuid as sub.
 - [x] E.3: POST /connect/register with initial access token from seeded client with client.create scope; specified metadata, 201 response, registration_access_token and registration_client_uri; GET registered client using registration access token.
-- [ ] E.4: Google/google, GitHub/github, Facebook/facebook and Telegram/telegram login through internal provisioning use case.
-- [ ] F: GET /login -> login.jte, social buttons and language switcher.
-- [ ] F: GET/POST /register -> register.jte, validation errors.
-- [ ] F: GET /oauth2/consent -> consent.jte, client name/scopes and Allow/Cancel.
-- [ ] F: GET / -> index.jte, profile claims/roles/permissions.
-- [ ] F: GET/POST /profile/edit -> profile-edit.jte.
-- [ ] F: GET/POST /profile/password -> change-password.jte.
-- [ ] F: GET /profile/accounts -> linked-accounts.jte, link/unlink social accounts.
-- [ ] F: GET /profile/apps -> connected-apps.jte, authorized apps and consent revocation.
-- [ ] F: messages.properties English and messages_km.properties Khmer; ?lang=en|km; no hard-coded template text; supplied eight message keys and formatted provider name.
-- [ ] Quality: one use case per class; controllers map DTOs and call use cases; soft deletion/auditing/optimistic locking everywhere; secrets only from environment variables.
-- [ ] Delivery: unit tests, integration tests, README, Postman collection and clear explanation of code/best practices.
+- [x] E.4: Google/google, GitHub/github, Facebook/facebook and Telegram/telegram login through internal provisioning use case.
+- [x] F: GET /login -> login.jte, social buttons and language switcher.
+- [x] F: GET/POST /register -> register.jte, validation errors.
+- [x] F: GET /oauth2/consent -> consent.jte, client name/scopes and Allow/Cancel.
+- [x] F: GET / -> index.jte, profile claims/roles/permissions.
+- [x] F: GET/POST /profile/edit -> profile-edit.jte.
+- [x] F: GET/POST /profile/password -> change-password.jte.
+- [x] F: GET /profile/accounts -> linked-accounts.jte, link/unlink social accounts.
+- [x] F: GET /profile/apps -> connected-apps.jte, authorized apps and consent revocation.
+- [x] F: messages.properties English and messages_km.properties Khmer; ?lang=en|km; no hard-coded template text; supplied eight message keys and formatted provider name.
+- [x] Quality: one use case per class; controllers map DTOs and call use cases; soft deletion/auditing/optimistic locking everywhere; secrets only from environment variables.
+- [x] Delivery: unit tests, integration tests, README, Postman collection and clear explanation of code/best practices.
 - [ ] Grading: 15 + 15 + 15 + 20 + 15 implementation points; 20 explanation/quality points; total 100. Deadline 10 November 2026 11:59 AM; late penalty 25% of score.
 
 ## Ambiguities to resolve explicitly
@@ -52,7 +52,7 @@ The original PDF remains authoritative for visual formatting and Khmer text.
 - Several use cases/actions lack explicit REST payloads/routes: admin password reset, revocation reasons, identity linking and connected-app consent revocation. Implement the required behavior and document supplementary contracts.
 - UserResult example name is given-name then family-name, despite the example username suggesting a different ordering; follow the explicit name rule.
 - Khmer PDF text extraction is imperfect: use the visible PDF and verify translations, not extracted glyph order.
-- Earlier direct-YAML credential preference conflicts with environment-only assignment requirement; record this as an outstanding compliance decision.
+- Resolved during the final audit: the user delegated the choice; environment-supplied secrets were selected, with current workstation values preserved in protected Git-ignored local configuration. No stored secrets were rotated.
 
 ## Full source transcription by page
 

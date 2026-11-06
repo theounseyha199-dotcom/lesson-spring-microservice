@@ -1,135 +1,126 @@
 # IAM service
 
-The repository's authorization server uses PostgreSQL on port 9543 (`db_oauth2`).
-Run the full project with `./run-all.sh` at the repository root; see
-[the run guide](../../README.md).
+Spring Authorization Server / OIDC IAM with a plain Java domain, 39 assignment use cases, PostgreSQL/Liquibase
+persistence, 39 secured REST routes, Dynamic Client Registration, four social providers and English/Khmer JTE pages.
+Implementation Steps 1–9 and the automated Step 10 delivery audit are complete. Live provider-account acceptance
+still requires a human sign-in; see [the acceptance checklist](LIVE-PROVIDER-ACCEPTANCE.md).
 
-Login: `http://localhost:9000/login`, local user `user` / `password`.
-OIDC client: `oidc-client` / `secret`, Authorization Code with PKCE (SHA-256),
-scopes `openid profile`. Postman callback:
-`https://oauth.pstmn.io/v1/browser-callback`.
+## Run locally
 
-The startup runner inserts missing OIDC, Order and Postman clients after database
-migrations. Existing client IDs and secrets are preserved. Set the same
-`ORDER_CLIENT_SECRET` for IAM and Order (the startup script generates it once).
-Order tokens target Customer; Postman API tokens target Order.
+Java 17 and PostgreSQL are required. The existing local PostgreSQL service exposes port 9543; the default application
+database is db_oauth2. Build and start from this directory:
 
-The signing key persists at `IAM_SIGNING_KEY_FILE`, default
-`.local/iam-signing-key.json`, with owner-only permissions on Linux. Back it up
-and keep it outside Git. The startup script uses an absolute path.
+```sh
+./gradlew check bootJar
+java -jar iam-main/build/libs/iam-main-0.0.1-SNAPSHOT.jar
+```
 
-Database overrides: `IAM_DB_URL`, `IAM_DB_USER`, `IAM_DB_PASSWORD`.
-Server overrides: `IAM_PORT`, `IAM_ISSUER`. The OIDC secret can be supplied with
-`app.iam.client-secret` (`APP_IAM_CLIENTSECRET` using Spring's environment binding).
-Changing a secret property does not rotate an existing registered client.
+Open http://localhost:9000/login. The default now uses packaged precompiled templates, so no template sources are
+needed at runtime. Activate the dev profile only for live template editing. Reload the IntelliJ Gradle model after
+adding the JTE plugin. Existing migrations 001–005 are preserved; migration 006 upgrades the legacy domain schema.
+Stop an old binary before starting the new schema version because some legacy columns were renamed.
 
-Tests use H2 and temporary signing keys. The test changelog adapts PostgreSQL's
-multiple ADD COLUMN syntax for H2; production migrations remain unchanged.
+## Required external configuration
 
-For direct IntelliJ runs, IAM and Order also load the ignored
-`.local/runtime.properties` file when the working directory is the repository
-root or the service directory. Put `ORDER_CLIENT_SECRET=<shared secret>` in this
-file, using the same value as `.local/runtime.env` and the existing registered
-Order client. Environment variables override this file. Keep its permissions
-restricted (`chmod 600 .local/runtime.properties`).
+All IAM provider, database, bootstrap and client passwords/secrets are supplied through environment variables.
+For workstation convenience, application.yaml also imports the Git-ignored repository .local/runtime.properties.
+For a **new** checkout, use [runtime.properties.example](runtime.properties.example) as a key-only template there.
+If a local file already exists, merge missing keys; do not overwrite its current values. This workstation's current
+values were preserved locally during the audit. Never commit a populated runtime file or Postman environment.
 
-## Facebook login
-
-1. Create an app at [Meta for Developers](https://developers.facebook.com/apps/)
-   and configure Facebook Login for a website.
-2. Copy the App ID and App Secret into `client-id` and `client-secret` under
-   `spring.security.oauth2.client.registration.facebook` in
-   `iam-main/src/main/resources/application.yaml`, replacing the placeholder strings.
-3. Enable Web OAuth Login and register this exact Valid OAuth Redirect URI:
-   `https://lagging-grouped-bobsled.ngrok-free.dev/login/oauth2/code/facebook`.
-4. Restart IAM, keep the ngrok tunnel to port 9000 running, and open
-   `https://lagging-grouped-bobsled.ngrok-free.dev/login`. Choose
-   **Continue with Facebook**. Start on the same host as the callback to preserve
-   the session containing the OAuth state.
-
-The authorization start route is `/oauth2/authorization/facebook`; the callback
-route is `/login/oauth2/code/facebook`. If the tunnel hostname changes, update
-both YAML and Meta's registered redirect URI. The server requests only `public_profile` and identifies the account by Facebook's
-`id`. Email permission is not requested. External accounts are not automatically linked to local users
-or assigned local roles. Facebook endpoints use the app's default Graph API
-version. The secret is sent only during the server-side token exchange.
-
-Live sign-in requires real Meta credentials and the app's login permissions and
-availability to be configured for the intended users.
-
-## Module structure (Step 2)
-
-| Module | Responsibility |
+| Purpose | Variables |
 | --- | --- |
-| iam-domain/iam-domain-core | Immutable domain models, audited assignments and Section B rules |
-| iam-domain/iam-application-service | Application contracts and output ports |
-| iam-persistence | Complete JPA mappings, repository adapters, audited assignments and Liquibase upgrades |
-| iam-infrastructure | Security, Authorization Server, registered-client initialization and signing keys |
-| iam-rest-api | 39 secured REST routes, validated DTOs and RFC 9457 errors |
-| iam-web | Browser controllers, JTE templates, static assets and view configuration |
-| iam-main | Boot entry point, application configuration, domain-based seeding and integration tests |
+| PostgreSQL | IAM_DB_URL (default localhost:9543/db_oauth2), IAM_DB_USER (default iteuser), IAM_DB_PASSWORD |
+| Local bootstrap users | IAM_BOOTSTRAP_ADMIN_PASSWORD, IAM_PASSWORD, IAM_BOOTSTRAP_OWNER_PASSWORD |
+| OIDC client | IAM_CLIENT_ID (default oidc-client), IAM_CLIENT_SECRET |
+| Service clients | ORDER_CLIENT_SECRET, IAM_POSTMAN_CLIENT_SECRET |
+| Registration client | IAM_REGISTRATION_CLIENT_SECRET |
+| Social providers | IAM_GOOGLE_CLIENT_ID/SECRET, IAM_GITHUB_CLIENT_ID/SECRET, IAM_FACEBOOK_CLIENT_ID/SECRET, IAM_TELEGRAM_CLIENT_ID/SECRET |
+| Issuer/signing | IAM_ISSUER, IAM_PORT, IAM_SIGNING_KEY_FILE (optional; existing defaults retained) |
+| Fresh OIDC callbacks | IAM_REDIRECT_URI, IAM_POSTMAN_REDIRECT_URI, IAM_LOGOUT_REDIRECT_URI (optional) |
 
-From this directory run `./gradlew test bootJar` or `./gradlew bootRun`.
-From `microservices/`, existing `./gradlew :iam-service:test :iam-service:bootJar` commands remain available.
-The executable artifact now lives in `iam-main/build/libs/`.
-Reload Gradle in IntelliJ and select the **iam-main** module for `IamServiceApplication`.
-The Java main-class name is unchanged. Development templates are resolved from iam-web
-when launched from the module, service, microservices or repository directory.
+Use strong unique values for new deployments. Bootstrap inserts only missing users, roles and clients; changing
+configuration does **not** rotate stored passwords/client secrets or silently expand existing scopes. Current weak
+historical demo passwords are not reset by this change. The OIDC client ID/callback settings now apply to fresh seeds.
+Existing clients must be managed separately. An older OIDC client may have only openid/profile; request its existing
+scopes or register a new client with the needed supported scopes rather than silently modifying it.
 
-`./gradlew verifyModuleBoundaries` checks adapter dependency direction and rejects framework
-imports in domain/application sources. The adapters depend on application contracts, not one another.
-JPA models use `istad.ha.iamservice.persistence.entity`; repositories and adapters use
-`persistence.repository` and `persistence.adapter`. Security uses `infrastructure.config`,
-client initialization uses `infrastructure.init`, browser code uses `web.controller`/`web.config`,
-and application seeding uses `bootstrap`. Java package declarations match their source paths.
-The empty legacy service-root `src` tree has been removed. Migration SQL contents and classpath resource paths
-are unchanged. No database reset is required for the module move.
+Register each exact callback URL in its provider console. Google/GitHub default to the current base URL. The repository's
+Facebook/Telegram settings currently name the existing ngrok origin; override their Spring redirect-uri properties for
+your deployment and start sign-in on that same origin so OAuth state/session cookies return. Provider IDs/credentials
+cannot be validated solely by loading the configuration. No provider credentials were rotated during this audit.
 
-JTE still uses development compilation. Building bootJar verifies packaging, not standalone JTE
-rendering inside a packaged jar; production template precompilation remains a later task.
+The persistent signing key defaults to .local/iam-signing-key.json. Keep the same protected key across application
+restarts and instances as appropriate; removing it creates a new signature identity and invalidates old token checks.
 
-## Domain model (Step 3)
+## Architecture and contracts
 
-The [domain guide](iam-domain/iam-domain-core/README.md) explains the complete field mapping,
-authority and identity rules, and persistence contracts. Run the isolated rules with
-`./gradlew :iam-domain:iam-domain-core:test` from this directory. New domain records remain
-independent of Spring/JPA and are mapped through the persistence adapters.
+| Module | Responsibility / project dependencies |
+| --- | --- |
+| iam-domain-core | Domain records/rules; JDK only |
+| iam-application-service | Assignment use cases and output ports; domain-core |
+| iam-persistence | JPA/Liquibase adapters; application-service |
+| iam-infrastructure | Security, federation, OAuth/JDBC and transaction adapters; application-service |
+| iam-rest-api | Strict DTOs, permission/ownership checks and Problem Details; application-service |
+| iam-web | JTE controllers, shared templates and localization; application-service |
+| iam-main | Entry point/bootstrap and composition of all modules |
 
-## Persistence upgrade (Step 4)
+The original 39 use cases plus three browser-support use cases are present. Adapters do not depend on one another.
+`./gradlew verifyModuleBoundaries` checks dependencies and framework-free inner sources. The Authorization Server
+is an adapter rather than the domain model. Current UUID subjects and domain permissions govern user access tokens;
+service-client subjects and existing audiences remain separate.
 
-The [persistence guide](iam-persistence/README.md) covers schema changes, preservation checks,
-versioning, identity locking and PostgreSQL test setup. Existing SQL migrations are unchanged;
-new changesets upgrade the schema when IAM next starts. Stop the old application before running
-the new version because several legacy columns are renamed. The live database has not been
-migrated during implementation. Default tests remain isolated in H2; PostgreSQL verification
-uses a separate iam_test_... database.
+- [Domain guide](iam-domain/iam-domain-core/README.md): field validation, effective permissions and identity history.
+- [Application guide](iam-domain/iam-application-service/README.md): use cases, typed inputs, trust/transaction boundaries.
+- [Persistence guide](iam-persistence/README.md): forward migrations, uniqueness, audit/versioning and disposable tests.
+- [REST guide](iam-rest-api/README.md): all 39 routes, exact authorities, safe responses and RFC 9457 errors.
+- [Authorization/federation guide](iam-infrastructure/README.md): JDBC state, scoped claims, DCR and callback proofs.
+- [Browser guide](iam-web/README.md): all eight Section F pages, confirmation flows, localization and packaged templates.
 
-## Application use cases (Step 5)
+Registration assigns USER only. Administrative routes require exact resource:action permissions; a role name or
+OAuth scope alone is insufficient. /api/me derives ownership from an IAM-issued user access-token subject. Provider
+claims never grant internal roles, matching emails do not auto-merge accounts, and a missing mandatory provider
+profile requires an expiring completion flow. Historical identity ownership and the last sign-in method are protected.
+App revocation removes the owner's persisted grants/consent and prevents refresh, but already issued self-contained
+JWTs can remain valid at downstream resource servers until expiry.
 
-The [application guide](iam-domain/iam-application-service/README.md) lists all 39 Section C use cases,
-commands/results, transaction behavior, paging, password policy and federation trust boundaries.
-Local authentication calls the application use case and records login attempts. REST endpoints are implemented in Step 6; provider-callback provisioning remains a later step.
+## Postman and verification
 
-## Secured REST APIs (Step 6)
+Use [IAM-Assignment.postman_collection.json](../../postman/IAM-Assignment.postman_collection.json) and its empty-secret
+[environment](../../postman/IAM-Assignment.postman_environment.json). Follow the [Postman guide](../../postman/README.md).
+Use Authorization Code + SHA-256 PKCE with a real internal user; use a permission-bearing admin user for admin routes.
+The collection includes all 39 REST routes, OAuth/OIDC metadata and DCR. Identity/password/cleanup operations require
+explicit setup and should be run individually against disposable data.
 
-All 39 Section D routes are implemented. See the [REST adapter guide](iam-rest-api/README.md) for routes,
-permissions, input/output contracts and test coverage. POST /api/auth/register is public; other API routes
-require an own-issuer JWT access token. Administrative operations enforce exact permission authorities;
-/api/me derives ownership from the internal UUID subject. Browser sessions and CSRF remain separate.
+```sh
+./gradlew check bootJar
+python3 scripts/audit-delivery.py
+```
 
-Local-user access tokens now use the internal UUID subject; service-client subjects are preserved.
-Scope-controlled OIDC claims, JDBC authorization/consent persistence and dynamic client registration are implemented in Step 7. Production template precompilation and later browser/federation features remain pending.
+Final verification on 6 November 2026:
 
-## Authorization Server features (Step 7)
+| Check | Result |
+| --- | --- |
+| H2 suite | 182 reported: 181 passed, 1 PostgreSQL-only container skipped; 0 failures/errors |
+| Disposable PostgreSQL 18.4 suite | 184 passed, 0 failures/errors/skips; temporary database removed |
+| Gradle / packaging | check, verifyModuleBoundaries and bootJar pass |
+| Postman runtime | 44 requests, 66 assertions, 0 failures against isolated packaged-app data |
+| Static delivery contract | 9 checks pass: 39 routes, 39 required use cases, locales/pages, secrets and legacy migrations |
+| Browser verification | Step 9: 48 Chromium workflow/layout checks pass; packaged JAR runs without template sources |
 
-JDBC authorization/consent persistence, scope-controlled OIDC claims, UUID user subjects and Dynamic Client
-Registration are complete. See the [infrastructure guide](iam-infrastructure/README.md) for claims, registration,
-security policy and verification details.
+The Postman run excludes the interactive OAuth-helper folder and manual password/identity actions. Those REST routes
+remain covered by the server integration tests. For PostgreSQL testing, provide IAM_TEST_DB_URL with a **disposable**
+database name matching iam_test_..., IAM_TEST_DB_USER and IAM_TEST_DB_PASSWORD. The test harness rejects other names.
+Never point tests at db_oauth2.
 
-Set `IAM_REGISTRATION_CLIENT_SECRET` to a separate strong secret before starting IAM. Startup seeds
-`client-registrar` with only `client.create`; existing client secrets and scopes are preserved. Initial registration
-tokens are single-use. POST `/connect/register` returns a generated secret once and a registration token for reading
-that specific client. Native registration requires PKCE/consent and accepts only the supported OIDC scopes.
+See [DELIVERY-AUDIT.md](DELIVERY-AUDIT.md) for the final evidence and outstanding human acceptance. No live application
+database reset, credential rotation, deployment, commit or push was performed by the delivery audit.
 
-Step 7 verification: 144 passed, one PostgreSQL-only container skipped (145 reported), zero failures/errors;
-`check`, module boundaries and `bootJar` pass. The next step is provider callback provisioning/linking (Step 8).
+
+## Live-provider readiness follow-up
+
+The current ngrok HTTPS origin is reachable. Forwarded-header handling now preserves HTTPS callback URLs, with an
+embedded-server regression and local IAM restart verified. GitHub/Facebook/Telegram reach their real sign-in pages.
+Google reaches sign-in from localhost; its public flow is blocked until the exact HTTPS callback is added to the
+Google OAuth client's authorized redirect URIs. See [live results](LIVE-PROVIDER-RESULTS.md). Provider account login/MFA
+remains manual; authorization-page checks do not claim an end-to-end login.

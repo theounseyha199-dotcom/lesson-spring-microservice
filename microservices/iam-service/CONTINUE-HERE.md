@@ -4,7 +4,7 @@ Saved 6 November 2026 at the user's request: continue this work when we meet aga
 
 ## Resume point
 
-Steps 1–7 are complete. Next: **Step 8 — Section E.4 provider callback provisioning and account linking**.
+Steps 1–9 and the automated Step 10 delivery audit are complete. Remaining: **manual live-provider acceptance and submission review**.
 Do not restart the implementation or repeat completed phases without a concrete regression reason.
 
 Read first:
@@ -27,6 +27,9 @@ Deadline stated in the PDF: 10 November 2026, 11:59 AM; late penalty 25%.
    Spring wiring, UUID-based credentials-erasing local principals and login-attempt recording.
 6. All Section D REST APIs, own-issuer bearer security, permission/ownership enforcement and API integration tests.
 7. JDBC authorization/consent persistence, complete scope-controlled OIDC claims, and controlled Dynamic Client Registration.
+8. Validated provider callbacks, internal social-user sessions, mandatory-profile completion and state/owner-bound account linking.
+9. All Section F JTE pages, provider disconnection, app revocation, English/Khmer localization and production template compilation.
+10. Automated assignment/README/Postman audit, external secret configuration, fresh PostgreSQL/H2 validation and executed collection checks. Human provider-account acceptance remains pending.
 
 Historical Step 5 verification: PostgreSQL 84 tests passed with zero failures/skips; H2 81 passed,
 one PostgreSQL-only parameterized container skipped (82 reported); module checks, bootJar and IntelliJ compilation passed.
@@ -37,20 +40,33 @@ No live IAM database migration, signing-key rotation, provider-secret change, or
 
 ## Next implementation scope
 
-Step 7 is complete. The user asked to save completion notes and resume next time.
-Do not repeat the completed phases without a concrete regression.
+The automated delivery work is complete. Read README.md, DELIVERY-AUDIT.md and LIVE-PROVIDER-ACCEPTANCE.md.
+Do not repeat implemented phases or fabricate live login success. The remaining work needs the real provider account
+owner to authenticate/MFA and verify provider-console callbacks. Record nonsecret outcomes only. No deployment,
+commit or push has been requested; final submission/grading remains with the owner.
 
-Next: implement Section E.4 callback integration for Google/google, GitHub/github, Facebook/facebook and
-Telegram/telegram. Validate each provider's proof before constructing FederatedIdentityCommand, route login through
-FindOrProvisionFederatedUserUseCase, and route explicit authenticated account linking through LinkIdentityUseCase.
-Bind linking callbacks to the authenticated internal owner and protect state/session/PKCE. Never merge matching emails,
-trust provider role claims or fabricate required profile data. Missing mandatory provider fields require a controlled
-profile-completion flow. Preserve browser CSRF and the existing last-sign-in/identity-history rules.
+Current verification (Step 10): PostgreSQL 18.4: 183 passed, no failures/errors/skips; disposable database removed.
+H2: 181 reported, 180 passed, one PostgreSQL-only container skipped, no failures/errors. check/module boundaries and
+bootJar pass. The new IAM Postman collection passed 44 requests/66 assertions against an isolated packaged app.
+All 9 delivery contract checks pass. Step 9 browser evidence is 48 passing checks. No live application DB writes/reset,
+provider-account login, credential rotation, deployment, commit or push occurred during this audit.
 
-Then complete the required JTE pages, English/Khmer localization, production template precompilation and final
-README/Postman/requirements audit. Read iam-infrastructure/README.md for current OIDC/DCR contracts first.
+External secret configuration is now the chosen policy. Values were retained in protected, ignored local files;
+new exported Postman environments have empty secrets. Existing stored passwords/client secrets are not changed by
+startup configuration. Fresh OIDC seeds honor the configured ID/callbacks. Use the dev profile only for live JTE editing.
 
-Current verification (Step 7): 145 reported H2 tests, 144 passed, one PostgreSQL-only container skipped; zero failures/errors.
+Historical verification (Step 9): 180 reported tests, 179 passed, one PostgreSQL-only container skipped; no failures/errors.
+All 12 new browser cases pass; check/module boundaries and bootJar pass. The production JAR was run from /tmp with
+no template sources and an isolated H2 database using test-only external loader resources. Chromium passed 48 checks
+with zero JS errors; desktop/mobile, English/Khmer, native controls and 200% zoom were checked. Strict UI audit has
+zero findings. No live database, existing provider/client credentials, signing key or deployment was changed.
+
+Historical verification (Step 8): 168 reported tests, 167 passed, one PostgreSQL-only container skipped; zero failures/errors.
+All 23 new federation protocol/security cases pass. check (including module boundaries) and bootJar pass. Strict UI
+audit has zero findings; actual rendered JTE pages were inspected in Firefox at mobile/desktop widths. No live provider
+account login, new PostgreSQL run, deployment, provider/client secret rotation or signing-key change was performed.
+
+Historical verification (Step 7): 145 reported H2 tests, 144 passed, one PostgreSQL-only container skipped; zero failures/errors.
 19 new Authorization Server protocol cases and all 44 REST/security cases pass. check (including module boundaries)
 and bootJar pass. JDBC service reconstruction reloads codes/tokens/consent; no full OS-process restart is claimed.
 PostgreSQL was not re-verified because local Docker sockets were unavailable in this session. No live db_oauth2
@@ -67,8 +83,7 @@ permissions are refreshed from current domain rules; ID-token/UserInfo personal 
 ## Important contracts and preferences
 
 - Set IAM_REGISTRATION_CLIENT_SECRET before starting IAM; keep its plaintext value out of notes and Git.
-- User prefers direct YAML provider credentials; assignment requires environment-only secrets. This conflict remains
-  recorded for explicit treatment. Do not silently rotate, expose, or copy secrets into notes/reports.
+- On 6 November the user delegated the final choice: use external/environment-supplied secrets. The earlier direct-YAML preference is superseded. Preserve current local values and never rotate/expose them silently.
 - Preserve existing unrelated edits and user-deleted DESIGN.md, OAUTH2.md and UX-CONTRACT.md. Do not recreate them.
 - Work is uncommitted; do not reset or overwrite the user's workspace changes.
 - Original SQL migrations 001–005 are unchanged. New 006 changesets upgrade on the next IAM restart.
@@ -77,7 +92,7 @@ permissions are refreshed from current domain rules; ID-token/UserInfo personal 
 - Provider+subject and owner+provider keys remain reserved after unlinking. Explicit relinking restores the same row.
 - Federation never auto-merges email matches, trusts provider role claims, or fabricates mandatory profile data.
 - New-password policy: minimum 12 characters, maximum 72 UTF-8 bytes for BCrypt. Existing demo passwords remain unchanged.
-- JTE uses development compilation; production jar template precompilation is still pending.
+- JTE defaults to packaged precompiled templates. Activate the dev profile only for live template editing.
 - Facebook/Telegram currently use a configured ngrok callback. Start login on that same origin to retain OAuth state.
 - Java entry point remains istad.ha.iamservice.IamServiceApplication in iam-main. Reload Gradle in IntelliJ if needed.
 
@@ -93,3 +108,19 @@ IAM_TEST_DB_URL, IAM_TEST_DB_USER and IAM_TEST_DB_PASSWORD. The harness rejects 
 Use isolated test databases; never point tests at db_oauth2. Existing local container ite-postgres exposes port 9543.
 Gradle may need sandbox escalation for its home-directory cache; run IDE builds and Gradle verification sequentially
 because concurrent compilers previously interfered with generated output.
+
+
+## Live-provider readiness follow-up (6 November)
+
+Tested all four real authorization pages. GitHub/Facebook/Telegram reach account sign-in; Google reaches account
+sign-in from localhost but returns redirect_uri_mismatch from the public ngrok origin. LIVE-PROVIDER-RESULTS.md gives
+the exact public URI to add to the configured Google Web OAuth client; retain the working localhost URI. No provider
+console was modified and no provider password/OTP/MFA was entered. Existing DB rows have GitHub/Telegram login history,
+a Google identity without a login timestamp, and no Facebook identity; these are historical evidence, not a new login.
+
+Fixed a concrete readiness regression: enable Tomcat native forwarded headers so Google/GitHub callbacks use HTTPS
+behind ngrok. New embedded-server test passes; full H2 suite: 182 reported, 181 passed, one skipped. IAM was restarted
+through its IntelliJ run configuration and all public callback schemes rechecked. Keep the current local IAM process
+running for the owner's manual tests. Live provider-account acceptance is still pending; do not fabricate completion.
+
+Final proxy-fix PostgreSQL regression: 184 passed, zero failures/errors/skips; disposable test DB removed.

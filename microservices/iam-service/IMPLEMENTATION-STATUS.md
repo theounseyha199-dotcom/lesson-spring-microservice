@@ -217,9 +217,89 @@ one PostgreSQL-only container skipped, zero failures/errors. All 44 Step 6 REST 
 checks prove JDBC reloads; a full OS-process restart and a new PostgreSQL run are not claimed. No live IAM database
 was migrated, no existing client/provider secrets or signing keys were rotated, and no deployment occurred.
 
-## Next phase
+## Phase 8: provider callbacks, provisioning and authenticated linking — complete
 
-Phase 8: Section E.4 provider callbacks/provisioning and authenticated account linking for Google, GitHub, Facebook
-and Telegram. Then the remaining JTE pages/localization, production template compilation and final delivery/audit.
+- Spring OAuth/OIDC callbacks for Google, GitHub, Facebook and Telegram now invoke the internal provisioning use case.
+  Signed-subject and issuer checks complement framework ID-token validation; S256 PKCE is enabled for Google/GitHub/Telegram.
+- Successful sign-in stores only a credential-free internal principal in the final browser context, with current domain
+  authorities. Social sessions also complete an IAM authorization-code exchange and receive internal-UUID access/ID tokens.
+- Missing mandatory attributes use a five-minute, server-side, session/flow-bound completion form. Only missing fields
+  are accepted; provider verification cannot be overwritten and supplied email remains unverified. Completion is one-use,
+  CSRF-protected and renews the session ID. Cancellation, validation, expiry and wrong-flow cases are covered.
+- Explicit CSRF-protected linking starts from /profile/accounts. The OAuth request binds the owner to state and the
+  callback requires the same internal owner. Domain ownership/history rules prevent transfer and support explicit relinking.
+  Cancellation/conflicts restore the original session. Email matches do not auto-merge; provider privileges are ignored.
+- Added rendered completion and connected-account views using existing login tokens, plus a home navigation link.
+  The full Section F unlink UI and localization remain subsequent work. User-deleted design/UX documents were not recreated.
+- FederationIntegrationTests exercises real filters, local mock-provider HTTP exchanges, UserInfo and signed ID tokens;
+  production provider credentials, live db_oauth2 and signing keys are not used or changed by tests.
+
+Verification: `./gradlew -p microservices/iam-service check bootJar` passed, including module boundaries and application
+packaging. IAM reports 168 tests: 167 passed, one PostgreSQL-only container skipped, zero failures/errors. All 23 new
+federation cases pass. The targeted federation suite also ran independently with all cases passing. Strict UI audit:
+zero findings. Firefox screenshots of actual test-rendered JTE pages were checked at 390x844 and 1440x1000. No live
+provider-account login, new PostgreSQL run, deployment or provider/client credential rotation is claimed.
+
+## Phase 9: Section F browser pages, localization and production JTE — complete
+
+- All eight required route/template pairs are implemented, with a shared account layout and English/Khmer message
+  bundles. Language cookies persist the selection; consent links retain their protocol context. Home shows current
+  internal claims/roles/permissions; unprovisioned external principals cannot open internal account pages.
+- Public registration assigns USER only. Profile updates use the session owner, validate all fields and reject stale
+  versions with 409. Password changes verify the current password and never echo secrets. Browser CSRF, form errors,
+  duplicate-submit protection, PRG success states, masked/show-hide controls and keyboard focus are preserved.
+- Provider disconnect confirmation and owner-bound POST reuse domain history/last-sign-in rules. App revoke confirmation
+  explains JWT expiry; a new framework-free port and JDBC adapter remove only that owner's authorizations/consent,
+  preventing refresh/code reuse without affecting other owners or clients.
+- JTE 3.2.5 generates/compiles template classes during the Gradle build; default mode uses those packaged classes.
+  The dev profile explicitly enables live compilation. Existing login tokens remain the UI foundation; user-deleted
+  design/UX documents were not recreated.
+
+Verification: check (including module boundaries) and bootJar pass. IAM reports 180 tests: 179 passed, one PostgreSQL-only
+container skipped, no failures/errors. All 12 new browser integration cases pass with production precompiled templates.
+The packaged JAR runs from /tmp with no template sources, using an isolated in-memory database and external test-only
+H2/changelog resources. Chromium passed 48 workflow/layout checks with no JS errors; screenshots cover both languages,
+mobile/desktop, errors/empty/success, 200% zoom and native popup states. Strict UI audit has zero findings. Standalone JAR
+inspection confirms packaged template classes. The final control geometry/localization refinements were repackaged; the full IAM checks and
+48-check browser run were repeated successfully.
+
+See iam-web/README.md for routes, trust boundaries and exact operating instructions. No live application database,
+provider credentials, existing client secrets or signing keys were changed by this step; no deployment occurred.
+
+## Phase 10: automated delivery audit and verification — complete; human provider acceptance pending
+
+- Re-read the original assignment PDF and reconciled the final implementation. The reusable audit script matches all
+  39 REST method/route pairs to Postman, all 39 required use cases to source, all eight templates and 133 matching locale
+  keys. Dependency/import and legacy-migration preservation checks pass.
+- Externalized provider IDs/secrets, the database password, bootstrap passwords and OAuth service/client secrets. The user
+  delegated the preference decision; current values were preserved in protected Git-ignored local files. The shared
+  PostgreSQL compose password is also external and its configuration validates without changing containers.
+- Fresh OIDC seeds now consume configured client IDs/callbacks/logout URIs; a new test covers this. Existing records,
+  password/client hashes and signing keys are preserved. An unused IAM_USERNAME setting was removed.
+- Added a dedicated IAM collection/environment for all 39 REST routes plus OAuth/OIDC/DCR and negative cases. Exported
+  passwords/tokens/secrets are empty; the old service environment's filled secret was removed with a private local copy
+  preserved. Updated root/service/dependency/Postman guides and created DELIVERY-AUDIT.md plus live acceptance instructions.
+
+Final verification: fresh disposable PostgreSQL 18.4 check/bootJar --rerun-tasks passed, 183 tests, zero failures/errors/skips;
+its temporary database was removed. H2 check/bootJar passed, 181 reported, 180 passed, one PostgreSQL-only container skipped.
+The actual new Postman collection passed 44 requests and 66 assertions against an isolated packaged JAR after obtaining a
+synthetic administrator token with the real authorization-code + S256 PKCE flow. Static delivery audit: all 9 checks pass.
+Prior Step 9 browser evidence remains 48 passing checks. No live db_oauth2 writes/reset, provider-account login, credential
+rotation, deployment, commit or push was performed by this audit.
+
+## Remaining acceptance
+
+Manual sign-in/MFA and provider-console callback checks for Google, GitHub, Facebook and Telegram, following
+LIVE-PROVIDER-ACCEPTANCE.md. These are recorded as not performed; automated proof tests are not a substitute for live
+account acceptance. Submission/grading remains with the owner. Implementation and automated delivery checks are complete.
 
 
+## Live-provider readiness follow-up
+
+Real provider pages checked: GitHub/Facebook/Telegram sign-in pages reached; Google localhost sign-in reached, but
+public Google returns redirect_uri_mismatch. Exact console correction and nonsecret DB baseline are recorded in
+LIVE-PROVIDER-RESULTS.md. Added native trusted-proxy forwarded-header handling and a regression for HTTPS callbacks
+plus preserved direct HTTP; local IAM restarted and public callback schemes verified. Full H2: 182 reported, 181 passed,
+one PostgreSQL-only container skipped. Provider account authentication/MFA and Google-console modification remain pending.
+
+Final proxy-fix PostgreSQL regression: 184 passed, zero failures/errors/skips; disposable test DB removed.

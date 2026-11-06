@@ -99,7 +99,7 @@ PageResult preserves the required content/page envelope and count/page metadata 
 ## Federation trust boundary
 
 FederatedIdentityCommand must be built by an adapter only after validating the provider's OAuth/OIDC proof.
-It is not an unauthenticated HTTP payload. Provider callback wiring is a later step.
+It is not an unauthenticated HTTP payload. The Step 8 infrastructure callback adapter constructs it only after Spring OAuth/OIDC proof validation; profile completion can supply only missing mandatory fields.
 
 FindOrProvisionFederatedUserUseCase locates existing users by provider+subject, never by automatic email merging.
 For a new account, missing required email/given/family names returns profile_completion_required with the missing
@@ -131,8 +131,8 @@ credential check into an unexplained sign-in failure. The listener is best-effor
 
 The application's use cases are trusted internal operations. REST permission checks, current-user ownership routing,
 JWT API security, HTTP DTO validation and RFC 9457 mapping are implemented in iam-rest-api (Step 6); the presence of
-these Java beans alone does not expose or authorize public admin endpoints. Later federation adapters must bind linking
-callbacks to the authenticated owner and validate provider responses before creating the command.
+these Java beans alone does not expose or authorize public admin endpoints. The Step 8 federation adapter binds linking
+callbacks to the authenticated internal owner and validates provider responses before creating the command.
 
 ## Verification
 
@@ -144,3 +144,12 @@ session credential erasure and concurrent first provisioning. Existing migration
 
 Verified: PostgreSQL 84 tests, zero failures/skips. H2: 81 passed, 1 PostgreSQL-only parameterized container skipped (82 reported).
 IntelliJ compilation, module-boundary checks and bootJar passed; jdeps found only JDK/domain-core runtime dependencies. PostgreSQL tests use a disposable iam_test_... database; no live IAM database is modified.
+
+
+## Browser support added in Step 9
+
+GetConsentClientUseCase, ListConnectedAppsUseCase and RevokeConnectedAppUseCase delegate through the plain
+ConnectedApplications port; all framework and SQL details remain in infrastructure. Browser callers supply the
+canonical username of the authenticated internal user, never an owner from submitted fields. The consent view
+loads registered metadata; native protocol state validation remains in Spring Security. Profile commands accept an
+optional expectedVersion for stale-form protection; existing API callers retain the two-argument constructor.

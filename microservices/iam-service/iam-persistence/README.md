@@ -50,7 +50,7 @@ recreate soft-deleted bootstrap usernames, and does not re-grant previously revo
 pairs. Missing ADMIN/USER definitions and missing default permissions are inserted idempotently.
 Local authentication now calls LoadUserForAuthenticationUseCase and resolves role/direct authorities through the domain AuthorityResolver, including DENY,
 expiry, revocation and inactive/deleted records. Lookup accepts username or email. Social-only users cannot
-use password authentication. Provider provisioning remains a later federation step.
+use password authentication. Provider callback provisioning/linking is implemented through infrastructure in Step 8.
 
 ## Tests
 
@@ -63,9 +63,11 @@ IAM_TEST_DB_USER and IAM_TEST_DB_PASSWORD when running the same Gradle command. 
 outside that database naming convention. Upgrade tests create/drop their own randomly named schemas inside
 that disposable database; they never target the application's live schema.
 
-Verified on PostgreSQL 18.4: 62 tests, zero failures/skips. H2: 59 passed, one PostgreSQL-only parameterized
+Historical Step 4 verification on PostgreSQL 18.4: 62 tests, zero failures/skips. H2: 59 passed, one PostgreSQL-only parameterized
 container skipped (60 reported tests). Coverage includes fresh startup, migration from the legacy schema,
 repeat migration, preservation of credentials/clients/relationships, rejection of collisions and overlength data,
 profile/JSON round trips, database uniqueness, stale snapshots, concurrent writes, concurrent unlinking,
 assignment deletion triggers, audit/version changes and seed idempotency. Existing browser/OAuth-start tests
 remain included; real provider token exchange is outside this step.
+
+Final Step 10 verification reran the full IAM suite on a fresh disposable PostgreSQL 18.4 database: 183 passed, zero failures/errors/skips; the database was removed. See ../DELIVERY-AUDIT.md.

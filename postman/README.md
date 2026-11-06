@@ -1,28 +1,52 @@
-# Postman local API collection
+# Postman collections
 
-Import `Service-OAuth-Full.postman_collection.json` and
-`Service-OAuth-Local.postman_environment.json`, then select **Service OAuth - Local**.
+## IAM assignment
 
-1. Set `order_client_secret` to the authorization server's `ORDER_CLIENT_SECRET`.
-   The other client credentials use source-code development defaults; adjust them
-   if your running server uses environment overrides or previously seeded clients.
-2. Start the authorization server (9000), order (9092), customer (8084),
-   business (8082), payment (8083), and gateway (9999), plus their databases and Consul.
-   Consul configuration can override the order port; update `order_url` if needed.
-3. Run both **Get … token** requests in folder 01. They save separate bearer tokens.
-4. Create a customer in folder 03 and business in folder 04. Their IDs save automatically.
-5. Run desired order, checkout, payment, or gateway requests individually.
+Import `IAM-Assignment.postman_collection.json` and `IAM-Assignment.postman_environment.json`, then select
+**IAM Assignment - Local (secrets empty)**. Every exported password, secret and token is intentionally empty.
 
-Do not run the whole collection indiscriminately: create requests write records,
-checkout creates another order and attempts payment, and folder 08 deactivates
-customers. Run lifecycle and negative checks individually. Token requests must be
-rerun after tokens expire or temporary authorization signing keys change.
+1. Start IAM after supplying the external configuration in the [service guide](../microservices/iam-service/README.md).
+2. Set `iam_url`, `oidc_client_id` and `oidc_client_secret` to an existing authorization-code client. Configure the OAuth
+   helper in folder 01 with Authorization Code (With PKCE), SHA-256, **Authorize using browser**, the registered callback,
+   and Basic-header client authentication. Sign in with an internal user; use an admin with exact permissions for admin APIs.
+3. Copy the resulting access token to the environment's **user_access_token** and its refresh token to **user_refresh_token**.
+   An ID token or a client-credentials token cannot substitute for a user access token at /api/me.
+4. Set `new_user_password` to a disposable test password (at least 12 characters, at most 72 UTF-8 bytes). Start with
+   metadata, registration, then permission/role/user CRUD folders. Created UUIDs save automatically. Clear `run_id` and
+   target UUIDs when deliberately starting a new disposable run. Entity flags are restored before assignment requests.
+5. To test DCR, set `registration_client_secret` to IAM_REGISTRATION_CLIENT_SECRET. Request a fresh single-use initial
+   token, register, then read that client with the returned registration token. The generated secret is returned once.
+   Registration/read tokens are separate from the user access token. For older OIDC clients with narrower stored scopes,
+   request their original scopes or use the newly registered client with its returned secret; startup does not widen them.
+6. Password and identity requests in folder 08 are manual: fill current/new passwords or a real linked identity UUID.
+   The API never accepts an unvalidated provider identity payload. Link through the browser first. Run folder 09 cleanup
+   last and verify the selected target UUIDs; do not run the collection indiscriminately against application data.
+7. Never share populated token/secret values or export them back into Git. No collection request logs those values.
 
-The source order security configuration enables CSRF. Order POST requests,
-including checkout and customer creation through order, may return 403 despite
-valid bearer tokens. Direct customer writes use the existing stateless bearer-token
-configuration. Server security has not been changed by this export.
+All 39 Section D routes have requests and response assertions. Administrative requests require exact resource:action
+permissions, not merely ROLE_ADMIN or OAuth scopes. Revocation DELETE payloads contain a reason; normal entity deletion
+and identity disconnection do not. Protected reads use bearer tokens; public registration/metadata are explicitly no-auth.
 
-Requests reflect local controllers and OAuth registrations. JSON structure and
-variable references were checked locally; no API writes or live end-to-end checks
-were performed. The intentionally failing customer `/flux` demo is omitted.
+The [delivery audit](../microservices/iam-service/DELIVERY-AUDIT.md) records runtime verification: 44 collection requests
+and 66 assertions passed against an isolated packaged app. Interactive OAuth-helper and manual identity/password folders
+were excluded from the collection run; all REST routes are additionally covered by server integration tests.
+
+[Postman's OAuth documentation](https://learning.postman.com/docs/use/send-requests/authorization/oauth-20/) describes
+its interactive authorization-code/PKCE helper. Automated collection runners need an already obtained user token.
+
+## Other microservices
+
+`Service-OAuth-Full.postman_collection.json` and `Service-OAuth-Local.postman_environment.json` retain the existing
+Order/Customer/Business/Payment/Gateway examples. These have different token variables and are separate from the IAM
+assignment collection. Set `order_client_secret` from ORDER_CLIENT_SECRET and `client_secret` from the existing
+Postman service client's IAM_POSTMAN_CLIENT_SECRET. Those values are no longer exported in plaintext.
+
+On this workstation, the previous filled legacy environment was preserved only in the Git-ignored
+`.local/postman-service.environment.json`. Do not commit or share that private file.
+
+Start the authorization server (9000), order (9092), customer (8084), business (8082), payment (8083), gateway (9999),
+databases and Consul. Consul may override the order port. The two folder-01 token requests save separate bearer tokens.
+Create the required customer/business records, then choose individual requests. Checkout creates another order and
+attempts payment; folder 08 deactivates customers. The existing Order security configuration enables CSRF, so Order
+writes may return 403 despite a valid bearer token. Direct customer writes use stateless bearer-token security.
+These older cross-service workflows were not rerun as part of the IAM delivery audit.

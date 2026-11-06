@@ -1,4 +1,4 @@
-# Authorization Server infrastructure — Step 7
+# Authorization Server infrastructure — Steps 7–8
 
 ## JDBC state
 
@@ -59,4 +59,52 @@ Run ./gradlew check bootJar from iam-service. The Step 7 suite adds 19 protocol 
 
 Final Step 7 H2 result: 145 reported tests, 144 passed, one PostgreSQL-only container skipped, no failures/errors. Module-boundary verification and bootJar pass. PostgreSQL was not re-verified in this session; no live IAM database, provider secret, existing registered-client secret or signing key was changed.
 
-Next: Step 8 — wire validated Google/GitHub/Facebook/Telegram callbacks to internal provisioning and authenticated linking. The use cases already exist; provider callbacks currently do not perform that integration. Remaining JTE pages, English/Khmer localization, production template compilation and final delivery remain later work.
+## Step 8: provider callbacks and explicit account linking
+
+Google/google, GitHub/github, Facebook/facebook and Telegram/telegram now enter through Spring Security's real
+OAuth/OIDC callback filters. Code exchange and provider UserInfo loading run before the federation handler.
+OIDC ID tokens retain signature, audience and nonce validation; the mapper also pins Google/Telegram issuers and
+uses the signed subject. Google, GitHub and Telegram requests use S256 PKCE. Facebook retains OAuth state and its
+server-side client-secret exchange. Facebook requests structured first_name/last_name/email fields; unavailable
+attributes still require profile completion. Provider access/ID tokens, nonces and role/permission inputs are not
+stored in the domain identity snapshot.
+
+FederationLoginHandler calls FindOrProvisionFederatedUserUseCase after proof validation, then replaces the temporary
+provider authentication with a credential-free IamUserPrincipal. Internal UUID subjects, current domain permissions,
+JDBC authorization persistence and existing IAM token/REST behavior therefore apply to social users too. Provider
+roles and matching emails never grant privileges or merge accounts. GitHub/Facebook email values are not treated as
+verified; a Google/Telegram verification flag must be a boolean claim accompanying an email.
+
+Missing required email/given/family names lead to GET/POST /federation/complete, not an authenticated IAM session.
+The pending identity stays server-side for five minutes, is bound to an opaque flow ID and the session, and is
+consumed after successful provisioning. Only missing fields can be completed; signed provider fields and verification
+flags cannot be overwritten. Manually supplied email stays unverified. The form preserves values and exposes field
+errors. CSRF, cancellation, expiry, replay protection and session-ID renewal apply. A new local sign-in invalidates a
+pending completion when it is next accessed. Restarting the application loses an unfinished in-memory flow; restart
+social sign-in in that case. Matching an existing email requires signing in to that account and explicitly linking.
+
+Use **Manage connected accounts** on the account home, or GET /profile/accounts. A CSRF-protected
+POST /profile/accounts/link/{provider} starts explicit linking. The owner UUID is stored with the OAuth authorization
+request/state. The callback must return in the same authenticated internal-owner session; callback owner parameters
+are never trusted. LinkIdentityUseCase retains provider ownership, historical uniqueness and relinking rules.
+Successful linking preserves the internal session and returns to the accounts page. Provider cancellation or an
+ownership conflict restores that same owner; an expired/changed owner cannot link. Identity unlinking rules
+remain enforced by the domain use case; the Section F confirmation/unlink UI is implemented in Step 9.
+
+Callback components and the security flow controller live in infrastructure; JTE views/static assets live in iam-web.
+No inward framework dependency or adapter-to-adapter project dependency was added. Keep the browser login origin
+consistent with the configured Facebook/Telegram ngrok callbacks so the OAuth state/session cookie returns.
+
+Verification uses FederationIntegrationTests with a local HTTP provider, real callback filters, code exchanges,
+UserInfo and RSA-signed ID tokens. It covers four providers, invalid signatures/nonces/audiences/issuers/tokens,
+state/replay, profile expiry/completion/cancellation, privilege injection, verified-field immutability, email collisions,
+linking CSRF/ownership/cancellation/conflicts/relinking, disabled users, and social-session IAM token issuance.
+The final counts and build evidence are recorded in IMPLEMENTATION-STATUS.md. Live provider-account logins and a new
+PostgreSQL run were not performed. Desktop/mobile browser previews use the actual test-rendered JTE output.
+
+Protocol references: [Spring OAuth2 Login](https://docs.spring.io/spring-security/reference/servlet/oauth2/login/advanced.html)
+and [Telegram OIDC](https://core.telegram.org/bots/telegram-login).
+
+Step 9 now completes Section F pages/localization and production templates; see ../iam-web/README.md. Final delivery
+verification remains. ConnectedApplications uses existing authorization/consent tables for owner-scoped app listing
+and transactional revocation. The custom consent page posts back to the native Authorization Server endpoint.
