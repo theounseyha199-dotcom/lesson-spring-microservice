@@ -1,0 +1,54 @@
+plugins {
+    id 'spring-cloud-common-conventions'
+}
+
+group = 'istad.ha'
+version = '0.0.1-SNAPSHOT'
+description = 'IAM application entry point'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':iam-domain:iam-domain-core')
+    implementation project(':iam-domain:iam-application-service')
+    implementation project(':iam-persistence')
+    implementation project(':iam-infrastructure')
+    implementation project(':iam-rest-api')
+    implementation project(':iam-web')
+
+    implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
+    implementation 'gg.jte:jte-spring-boot-starter-4:3.2.5'
+    implementation 'org.springframework.boot:spring-boot-starter-liquibase'
+    implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    runtimeOnly 'org.postgresql:postgresql'
+    testCompileOnly 'org.projectlombok:lombok'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'com.h2database:h2'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// Development templates live in iam-web, independently of the launch directory.
+tasks.named('bootRun') { workingDir rootProject.projectDir }
+tasks.named('test') {
+    workingDir rootProject.projectDir
+    inputs.property('iamTestDatabase', providers.environmentVariable('IAM_TEST_DB_URL').orElse('h2'))
+}

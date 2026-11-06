@@ -1,0 +1,82 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-preflight
+      author: iam
+      preConditions:
+        - onFail: HALT
+        - onError: HALT
+        - onFailMessage: Legacy IAM data violates the new domain constraints. Correct the affected data before retrying; no records will be truncated or merged.
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM users WHERE uuid IS NULL OR username IS NULL OR TRIM(username) = '' OR email IS NULL OR TRIM(email) = '' OR given_name IS NULL OR TRIM(given_name) = '' OR family_name IS NULL OR TRIM(family_name) = ''"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM users WHERE LENGTH(TRIM(username)) > 50 OR LENGTH(gender) > 20 OR LENGTH(phone_number) > 20 OR LENGTH(created_by) > 100 OR LENGTH(updated_by) > 100"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM roles WHERE LENGTH(role) > 50 OR LENGTH(description) > 255"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM permissions WHERE LENGTH(description) > 255"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM (SELECT LOWER(TRIM(email)) FROM users GROUP BY LOWER(TRIM(email)) HAVING COUNT(*) > 1) duplicates"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM (SELECT TRIM(username) FROM users GROUP BY TRIM(username) HAVING COUNT(*) > 1) duplicates"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM (SELECT TRIM(phone_number) FROM users WHERE NULLIF(TRIM(phone_number), '') IS NOT NULL GROUP BY TRIM(phone_number) HAVING COUNT(*) > 1) duplicates"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM permissions WHERE NOT REGEXP_LIKE(permission, '^[a-z][a-z0-9_-]*:[a-z][a-z0-9_-]*$') OR LENGTH(SUBSTRING(permission FROM 1 FOR POSITION(':' IN permission) - 1)) > 50 OR LENGTH(SUBSTRING(permission FROM POSITION(':' IN permission) + 1)) > 50"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM users WHERE NULLIF(TRIM(gender), '') IS NOT NULL AND LOWER(TRIM(gender)) NOT IN ('female', 'male', 'other')"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM users WHERE NULLIF(TRIM(phone_number), '') IS NOT NULL AND NOT REGEXP_LIKE(TRIM(phone_number), '^[+][1-9][0-9]{1,14}$')"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM users WHERE NOT REGEXP_LIKE(TRIM(email), '^[^ @]+@[^ @]+[.][^ @]+$')"
+      changes:
+        - sql: SELECT 1
+  - changeSet:
+      id: 006-user-uuid-postgresql
+      author: iam
+      dbms: postgresql
+      changes:
+        - sql: ALTER TABLE users ALTER COLUMN uuid TYPE UUID USING CAST(uuid AS UUID)
+  - changeSet:
+      id: 006-user-uuid-h2
+      author: iam
+      dbms: h2
+      changes:
+        - sql: ALTER TABLE users ALTER COLUMN uuid SET DATA TYPE UUID USING CAST(uuid AS UUID)
+  - changeSet:
+      id: 006-domain-schema
+      author: iam
+      changes:
+        - sqlFile:
+            path: db/changelog/upgrade/006-domain-schema.sql
+      modifySql:
+        - replace:
+            dbms: h2
+            replace: gen_random_uuid()
+            with: random_uuid()
+  - changeSet:
+      id: 006-assignment-history-postgresql
+      author: iam
+      dbms: postgresql
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              CREATE FUNCTION iam_preserve_assignment_history() RETURNS trigger LANGUAGE plpgsql AS $$
+              BEGIN
+                RAISE EXCEPTION 'IAM assignments must be revoked, never deleted';
+              END;
+              $$;
+        - sql: CREATE TRIGGER user_roles_no_delete BEFORE DELETE ON user_roles FOR EACH ROW EXECUTE FUNCTION iam_preserve_assignment_history()
+        - sql: CREATE TRIGGER role_permissions_no_delete BEFORE DELETE ON role_permissions FOR EACH ROW EXECUTE FUNCTION iam_preserve_assignment_history()
+        - sql: CREATE TRIGGER user_permissions_no_delete BEFORE DELETE ON user_permissions FOR EACH ROW EXECUTE FUNCTION iam_preserve_assignment_history()

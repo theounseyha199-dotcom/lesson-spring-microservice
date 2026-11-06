@@ -1,0 +1,22 @@
+# Copy to <repository>/.local/runtime.properties (Git-ignored), or set matching environment variables.
+# Fill every required value; preserve existing seeded secrets unless intentionally rotating separately.
+IAM_BOOTSTRAP_ADMIN_PASSWORD=
+IAM_BOOTSTRAP_OWNER_PASSWORD=
+IAM_CLIENT_SECRET=
+IAM_DB_PASSWORD=
+IAM_FACEBOOK_CLIENT_ID=
+IAM_FACEBOOK_CLIENT_SECRET=
+IAM_GITHUB_CLIENT_ID=
+IAM_GITHUB_CLIENT_SECRET=
+IAM_GOOGLE_CLIENT_ID=
+IAM_GOOGLE_CLIENT_SECRET=
+IAM_PASSWORD=
+IAM_POSTMAN_CLIENT_SECRET=
+IAM_REGISTRATION_CLIENT_SECRET=
+IAM_TELEGRAM_CLIENT_ID=
+IAM_TELEGRAM_CLIENT_SECRET=
+ORDER_CLIENT_SECRET=
+
+# Optional: override these with the exact callback registered in each provider console.
+# spring.security.oauth2.client.registration.facebook.redirect-uri=https://YOUR-IAM-ORIGIN/login/oauth2/code/facebook
+# spring.security.oauth2.client.registration.telegram.redirect-uri=https://YOUR-IAM-ORIGIN/login/oauth2/code/telegram

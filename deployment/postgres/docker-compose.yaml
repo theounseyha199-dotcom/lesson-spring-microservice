@@ -11,7 +11,7 @@ services:
     ports:
       - "9543:5432"
     environment:
-      POSTGRES_PASSWORD: qwerqwer
+      POSTGRES_PASSWORD: ${IAM_DB_PASSWORD:?Set IAM_DB_PASSWORD before starting PostgreSQL}
       POSTGRES_USER: iteuser
     volumes:
       - ite-pg-vol:/var/lib/postgresql/18/docker

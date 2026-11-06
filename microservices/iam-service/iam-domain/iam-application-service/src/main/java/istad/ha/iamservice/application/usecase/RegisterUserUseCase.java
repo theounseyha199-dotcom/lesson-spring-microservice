@@ -1,0 +1,30 @@
+package istad.ha.iamservice.application.usecase;
+
+import istad.ha.iamservice.application.*;
+import istad.ha.iamservice.application.port.*;
+import istad.ha.iamservice.application.result.*;
+import istad.ha.iamservice.application.exception.ApplicationException;
+import istad.ha.iamservice.domain.model.*;
+import istad.ha.iamservice.domain.rule.*;
+import java.util.*;
+import java.time.*;
+import java.util.stream.Collectors;
+import istad.ha.iamservice.application.command.*;
+import istad.ha.iamservice.application.query.*;
+import istad.ha.iamservice.application.support.*;
+
+public final class RegisterUserUseCase {
+    private final UseCaseContext context;
+    public RegisterUserUseCase(UseCaseContext context) { this.context = Objects.requireNonNull(context); }
+    public UserResult execute(RegisterUserCommand command) {
+        return context.transactions().write(() -> {
+            Checks.required(command, "command"); Passwords.confirm(command.password(), command.confirmPassword());
+            var profile = UserProfile.basic(command.givenName(), command.familyName(), command.locale() == null ? "en" : command.locale());
+            var candidate = User.create(command.username(), command.email(), context.passwords().hash(command.password()), profile, context.actor(), context.now());
+            context.uniqueUser(candidate.username(), candidate.email()); var role = context.defaultRole();
+            var user = context.users().save(candidate);
+            context.assignments().save(UserRole.assign(user, role, context.actor(), context.now(), null, "Self registration"));
+            return context.userResult(user);
+        });
+    }
+}

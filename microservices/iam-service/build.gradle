@@ -1,40 +1,65 @@
-plugins {
-    id 'spring-cloud-common-conventions'
-}
+plugins { id 'base' }
 
 group = 'istad.ha'
 version = '0.0.1-SNAPSHOT'
-description = 'iam-service'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+configure(subprojects.findAll { it.path != ':iam-domain' }) {
+    apply plugin: 'java-library'
+    group = rootProject.group
+    version = rootProject.version
+    java { toolchain { languageVersion = JavaLanguageVersion.of(17) } }
+    repositories { mavenCentral() }
+    dependencies {
+        implementation platform('org.springframework.boot:spring-boot-dependencies:4.1.1')
+        annotationProcessor platform('org.springframework.boot:spring-boot-dependencies:4.1.1')
+        testImplementation platform('org.springframework.boot:spring-boot-dependencies:4.1.1')
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+    tasks.withType(Test).configureEach { useJUnitPlatform() }
+}
+
+// Keep service-root and composite-build entry points available.
+tasks.register('test') {
+    dependsOn subprojects.collect { it.tasks.matching { task -> task.name == 'test' } }
+}
+tasks.register('bootRun') { dependsOn ':iam-main:bootRun' }
+tasks.register('bootJar') { dependsOn ':iam-main:bootJar' }
+tasks.named('check') { dependsOn subprojects.collect { it.tasks.matching { task -> task.name == 'check' } } }
+tasks.named('assemble') { dependsOn subprojects.collect { it.tasks.matching { task -> task.name == 'assemble' } } }
+
+// Fail fast if adapters start depending on one another or framework code leaks inward.
+tasks.register('verifyModuleBoundaries') {
+    group = 'verification'
+    description = 'Checks the IAM project dependency direction and framework-free inner layers.'
+    doLast {
+        def allowed = [
+            'iam-domain-core': [],
+            'iam-application-service': ['iam-domain-core'],
+            'iam-persistence': ['iam-application-service'],
+            'iam-infrastructure': ['iam-application-service'],
+            'iam-rest-api': ['iam-application-service'],
+            'iam-web': ['iam-application-service'],
+            'iam-main': ['iam-domain-core', 'iam-application-service', 'iam-persistence',
+                         'iam-infrastructure', 'iam-rest-api', 'iam-web']
+        ]
+        subprojects.findAll { allowed.containsKey(it.name) }.each { module ->
+            ['api', 'implementation', 'compileOnly', 'runtimeOnly'].each { configuration ->
+                module.configurations.getByName(configuration).dependencies
+                    .withType(org.gradle.api.artifacts.ProjectDependency).each { dependency ->
+                        if (!allowed[module.name].contains(dependency.name)) {
+                            throw new GradleException("Forbidden IAM dependency: ${module.name} -> ${dependency.name}")
+                        }
+                    }
+            }
+            if (module.name in ['iam-domain-core', 'iam-application-service']) {
+                module.fileTree('src/main/java').matching { include '**/*.java' }.each { source ->
+                    if (source.text =~ /(?m)^import\s+(org\.springframework|jakarta\.persistence|jakarta\.servlet|org\.hibernate|gg\.jte)\./) {
+                        throw new GradleException("Framework import in inner layer: ${source}")
+                    }
+                }
+            }
+        }
     }
 }
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-liquibase'
-    implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server'
-    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-    runtimeOnly 'org.postgresql:postgresql'
-    testCompileOnly 'org.projectlombok:lombok'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testRuntimeOnly 'com.h2database:h2'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
+tasks.named('check') { dependsOn 'verifyModuleBoundaries' }
+tasks.named('test') { dependsOn 'verifyModuleBoundaries' }
