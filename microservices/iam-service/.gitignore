@@ -2,3 +2,5 @@
 .env
 build/
 .gradle/
+# Local Markdown documentation
+*.md
